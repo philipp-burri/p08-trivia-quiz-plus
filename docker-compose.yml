@@ -23,7 +23,7 @@ services:
     volumes:
       - ./src:/var/www/app
     environment:
-      DB_NAME: library
+      DB_NAME: quiz
       DB_HOST: mysql
       DB_USER: webDev
       DB_PASSWORD: webDev
@@ -37,7 +37,7 @@ services:
     image: mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: library
+      MYSQL_DATABASE: quiz
       MYSQL_USER: webDev
       MYSQL_PASSWORD: webDev
     volumes:
