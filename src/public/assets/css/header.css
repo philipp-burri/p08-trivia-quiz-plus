@@ -7,8 +7,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    z-index: 1000;
+    padding: 20px 50px;
+
 }
 
 .header-left, .header-right {
@@ -34,5 +34,4 @@
 
 .home-link span {
     vertical-align: middle;
-}
 }

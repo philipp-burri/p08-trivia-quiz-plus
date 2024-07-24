@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
             selectedCategory = e.target.closest('.card').dataset.category;
             document.getElementById('categoryInput').value = selectedCategory;
             categories.style.display = 'none';
-            difficulties.style.display = 'flex';  // Ändern Sie dies zu 'flex'
+            difficulties.style.display = 'flex';
         }
     });
 
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
             selectedDifficulty = e.target.closest('.card').dataset.difficulty;
             document.getElementById('difficultyInput').value = selectedDifficulty;
             difficulties.style.display = 'none';
-            modes.style.display = 'flex';  // Ändern Sie dies zu 'flex'
+            modes.style.display = 'flex'; 
         }
     });
 

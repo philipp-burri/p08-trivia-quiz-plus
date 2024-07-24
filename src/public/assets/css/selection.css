@@ -5,7 +5,7 @@ body, html {
     font-family: 'Roboto', sans-serif;
 }
 
-.container {
+.selection-container {
     min-height: 100vh;
     width: 100vw;
     display: flex;
@@ -28,7 +28,6 @@ body, html {
     font-size: 3rem;
     color: white;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    margin-bottom: 2rem;
     font-family: 'Bowlby One SC', cursive;
     text-align: center;
 }
@@ -38,18 +37,18 @@ body, html {
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    gap: 40px;
+    gap: 20px;
     width: 100%;
-    max-width: 1200px;
-    margin-top: 80px; /* Fügt Abstand unterhalb des Headers hinzu */
+  
+   
 }
 
 .card {
     width: 250px;
     height: 350px;
-    perspective: 1000px;
+  
     cursor: pointer;
-    margin: 20px; /* Fügt zusätzlichen Abstand zwischen den Karten hinzu */
+    margin: 20px;
 
 }
 
@@ -77,7 +76,7 @@ body, html {
     box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);
 }
 
-/* Stellen Sie sicher, dass die Schwierigkeits- und Modus-Container initial ausgeblendet sind */
+
 #difficulties, #modes {
     display: none;
 }
@@ -94,6 +93,9 @@ body, html {
     text-align: center;
 }
 
+
+
+
 @keyframes slideInFromLeft {
     0% {
         transform: translateX(-100%);
@@ -105,8 +107,75 @@ body, html {
     }
 }
 
-.card {
+@keyframes slideInFromRight {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInFromTop {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+#categories .card {
     animation: slideInFromLeft 0.5s ease-out forwards;
     animation-delay: calc(var(--animation-order) * 0.1s);
     opacity: 0;
 }
+
+#difficulties .card:nth-child(1) {
+    animation: slideInFromLeft 0.5s ease-out forwards;
+}
+
+#difficulties .card:nth-child(2) {
+    animation: slideInFromRight 0.5s ease-out forwards;
+}
+
+#modes {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+}
+
+#modes .card {
+    width: 400px;
+    height: 100px;
+    margin-bottom: 20px; 
+    animation: slideInFromTop 0.5s ease-out forwards;
+    animation-delay: calc(var(--animation-order) * 0.1s);
+    opacity: 0;
+}
+
+#modes .card-inner {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+#modes .card p {
+    font-size: 28px;
+    margin: 0;
+}
+
+.card {
+    --animation-order: 0;
+}
+
+
+.card:nth-child(1) { --animation-order: 1; }
+.card:nth-child(2) { --animation-order: 2; }
+.card:nth-child(3) { --animation-order: 3; }
+.card:nth-child(4) { --animation-order: 4; }

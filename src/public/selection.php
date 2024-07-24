@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -12,7 +14,7 @@
 </head>
 <body>
   <?php include '../utils/header.php'; ?>
-    <div class="container">
+    <div class="selection-container">
         <h1 class="title">WÄHLE DEINE KATEGORIE</h1>
         <div class="card-container" id="categories">
             <div class="card" data-category="football">

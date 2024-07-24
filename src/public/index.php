@@ -23,7 +23,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="title">TRIVIAQUIZ++</h1>
+        <h1 class="title">TRIVIAQUIZ</h1>
         <a href="selection.php" class="start-button">START QUIZ</a>
     </div>
 </body>
