@@ -54,7 +54,7 @@ body {
   animation: animate 25s linear infinite;
   bottom: -150px;
   transition: all 0.3s ease;
-  
+  border-radius: 50%;
 }
 
 .circles li:hover{
@@ -139,17 +139,12 @@ body {
 
 
 @keyframes animate {
-
-  0%{
-      transform: translateY(0) rotate(0deg);
-      opacity: 1;
-      border-radius: 0;
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
   }
-
-  100%{
-      transform: translateY(-1000px) rotate(720deg);
-      opacity: 0;
-      border-radius: 50%;
+  100% {
+    transform: translateY(-1000px) rotate(720deg);
+    opacity: 0;
   }
-
 }
