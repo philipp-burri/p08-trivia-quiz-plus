@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const difficulties = document.getElementById('difficulties');
     const modes = document.getElementById('modes');
     const form = document.getElementById('quizForm');
+    const selectionTitle = document.getElementById('selectionTitle');
     let selectedCategory, selectedDifficulty, selectedMode;
 
     categories.addEventListener('click', function(e) {
@@ -11,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('categoryInput').value = selectedCategory;
             categories.style.display = 'none';
             difficulties.style.display = 'flex';
+            selectionTitle.textContent = 'SCHWIERIGKEITSGRAD';
         }
     });
 
@@ -19,7 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
             selectedDifficulty = e.target.closest('.card').dataset.difficulty;
             document.getElementById('difficultyInput').value = selectedDifficulty;
             difficulties.style.display = 'none';
-            modes.style.display = 'flex'; 
+            modes.style.display = 'flex';
+            selectionTitle.textContent = 'SPIELMODUS';
         }
     });
 

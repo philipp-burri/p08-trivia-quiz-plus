@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -15,7 +13,7 @@
 <body>
   <?php include '../utils/header.php'; ?>
     <div class="selection-container">
-    <!--     <h1 class="title">WÄHLE DEINE KATEGORIE</h1> -->
+        <h1 class="title" id="selectionTitle">WÄHLE DEINE KATEGORIE</h1>
         <div class="card-container" id="categories">
             <div class="card" data-category="football">
                 <div class="card-inner">
@@ -74,13 +72,11 @@
             </div>
         </div>
     </div>
-
     <form id="quizForm" action="questions.php" method="post">
         <input type="hidden" name="category" id="categoryInput">
         <input type="hidden" name="difficulty" id="difficultyInput">
         <input type="hidden" name="mode" id="modeInput">
     </form>
-
     
 </body>
 </html>
