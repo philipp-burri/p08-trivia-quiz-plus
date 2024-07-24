@@ -10,15 +10,8 @@
     <script src="assets/js/main.js"></script>
 
 </head>
-
 <body>
-    <?php
 
-    include dirname(__DIR__) . '/utils/db.php';
-
-
-
-    ?>
 </body>
 
 </html>
