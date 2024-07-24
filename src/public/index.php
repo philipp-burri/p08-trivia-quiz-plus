@@ -26,6 +26,21 @@
         <h1 class="title">TRIVIAQUIZ</h1>
         <a href="selection.php" class="start-button">START QUIZ</a>
     </div>
+
+    <div class="area" >
+            <ul class="circles">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+            </ul>
+    </div >
 </body>
 </html>
 </body>

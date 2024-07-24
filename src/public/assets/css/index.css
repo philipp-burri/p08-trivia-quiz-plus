@@ -1,8 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+
 body, html {
     margin: 0;
     padding: 0;
     height: 100%;
     font-family: 'Roboto', sans-serif;
+    overflow: hidden;
 }
 
 .container {
@@ -11,10 +14,39 @@ body, html {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(-45deg, #8E2DE2, #713add, #7B1FA2, #6A1B9A);
+    background: linear-gradient(135deg, #8E2DE2, #9B59B6, #7B1FA2, #4A0E82);
     background-size: 400% 400%;
     animation: gradientBG 15s ease infinite;
 }
+
+
+.title {
+    font-family: 'Cinzel', serif;
+    font-size: 102px;
+    font-weight: 700px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    margin-bottom: 2rem;
+}
+
+.start-button {
+    padding: 1.5rem 5rem;
+    font-size: 1.5rem;
+    color: white;
+    background-color: rgba(255,255,255,0.2);
+    border: 2px solid white;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 11; /* Noch höher, um sicherzustellen, dass er klickbar ist */
+}
+
+.start-button:hover {
+    background-color: white;
+    color: #7B1FA2;
+}
+
 
 @keyframes gradientBG {
     0% {
@@ -26,27 +58,4 @@ body, html {
     100% {
         background-position: 0% 50%;
     }
-}
-
-.title {
-    font-size: 4rem;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    margin-bottom: 2rem;
-}
-
-.start-button {
-    padding: 1rem 2rem;
-    font-size: 1.5rem;
-    color: white;
-    background-color: rgba(255,255,255,0.2);
-    border: 2px solid white;
-    border-radius: 5px;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.start-button:hover {
-    background-color: white;
-    color: #7B1FA2;
 }
