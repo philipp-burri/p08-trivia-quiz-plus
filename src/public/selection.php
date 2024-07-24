@@ -15,7 +15,7 @@
 <body>
   <?php include '../utils/header.php'; ?>
     <div class="selection-container">
-        <h1 class="title">WÄHLE DEINE KATEGORIE</h1>
+    <!--     <h1 class="title">WÄHLE DEINE KATEGORIE</h1> -->
         <div class="card-container" id="categories">
             <div class="card" data-category="football">
                 <div class="card-inner">

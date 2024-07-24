@@ -14,7 +14,7 @@ body, html {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #8E2DE2, #9B59B6, #7B1FA2, #4A0E82);
+    background: linear-gradient(270deg, #8E2DE2, #9B59B6, #7B1FA2, #4A0E82);
     background-size: 400% 400%;
     animation: gradientBG 15s ease infinite;
 }
