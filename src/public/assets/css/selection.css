@@ -4,7 +4,6 @@ body, html {
     height: 100%;
     font-family: 'Roboto', sans-serif;
 }
-
 .selection-container {
         min-height: 100vh;
         width: 100%;
@@ -55,7 +54,6 @@ body, html {
     cursor: pointer;
     margin: 20px;
 }
-
 .card-inner {
     font-size: 36px;
     width: 100%;
@@ -76,20 +74,17 @@ body, html {
     border: 1px solid rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(10px);
 }
-
 .card:hover .card-inner {
     transform: translateY(-15px) rotateX(5deg) rotateY(5deg);
     box-shadow: 0 15px 30px rgba(255, 255, 255, 0.5);
     background: rgba(200, 150, 250, 0.5);
 }
-
 .card i {
     font-size: 64px;
     margin-bottom: 20px;
     color: rgba(255, 255, 255, 1);
     transition: transform 0.3s ease;
 }
-
 .card:hover i {
     transform: scale(1.1);
 }
