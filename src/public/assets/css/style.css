@@ -58,7 +58,7 @@ body {
 }
 
 .circles li:hover{
-  transform: scale(1.2);
+  transform: scale(1.5);
 }
 .circles li:nth-child(1){
   left: 25%;

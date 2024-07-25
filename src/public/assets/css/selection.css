@@ -15,19 +15,16 @@ body, html {
         background: linear-gradient(90deg, #7B1FA2, #8E44AD, #6A1B9A, #4A0E82);
         background-size: 400% 400%;
         animation: gradientBG 15s ease infinite;
-        padding: 60px 20px 20px; /* Erhöht den oberen Padding um Platz für den Header zu schaffen */
+        padding: 60px 20px 20px; 
         box-sizing: border-box;
         position: relative;
-        overflow-y: auto; /* Falls der Inhalt größer als der Viewport ist */
+        overflow-y: auto;
     }
-
-
 @keyframes gradientBG {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
-
 .title {
     font-size: 3rem;
     color: white;
@@ -35,9 +32,9 @@ body, html {
 
     font-weight: 400;
     text-align: center;
-    margin-bottom: 30px; /* Changed from 50px to 30px */
+    margin-bottom: 30px; 
     position: absolute;
-    top: 20%; /* Positions the title closer to the top */
+    top: 20%; 
 }
 .card-container {
     display: flex;
@@ -47,7 +44,7 @@ body, html {
     gap: 20px;
     width: 100%;
     position: absolute;
-    top: 55%; /* Adjusted from 50% to 55% to move it slightly down */
+    top: 50%; 
     left: 50%;
     transform: translate(-50%, -50%);
 }
