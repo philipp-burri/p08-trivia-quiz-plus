@@ -1,4 +1,7 @@
 <?php
+if (!isset($_SESSION)) {
+    session_start();
+}
 
 $db_host = getenv("DB_HOST");
 $db_name = getenv("DB_NAME");

@@ -1,3 +1,6 @@
+<?php if (!isset($_SESSION)) {
+    session_start();
+} ?>
 <?php
 // Stellen Sie sicher, dass die POST-Daten empfangen wurden
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

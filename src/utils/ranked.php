@@ -1,11 +1,18 @@
 <?php
+if (!isset($_SESSION)) {
+    session_start();
+}
 
-function ranked_simple($dbConnection) {
-    $name = $_POST['name'] ?? 'Test';
-    $points = $_POST['points'] ?? 10;
-    $time = $_POST['time'] ?? 165;
+$name = $_POST['name'] ?? 'Test';
+$points = $_POST['points'] ?? 101;
+$time = $_POST['time'] ?? 140;
+$animals = isset($_POST['animals']) ? (int) $_POST['animals'] : 1;
+$geography = isset($_POST['geography']) ? (int) $_POST['geography'] : 0;
+$history = isset($_POST['history']) ? (int) $_POST['history'] : 0;
+$beginner = isset($_POST['beginner']) ? (int) $_POST['beginner'] : 1;
+$advanced = isset($_POST['advanced']) ? (int) $_POST['advanced'] : 0;
 
-
+function rankedSimple($dbConnection, $name, $points, $time) {
     try {
         $sqlCount = "SELECT COUNT(*) FROM ranking_simple";
         $stmtCount = $dbConnection->query($sqlCount);
@@ -19,9 +26,9 @@ function ranked_simple($dbConnection) {
             $minPoints = $min['min_points'];
             $maxTime = $min['max_time'];
 
-            // Wenn der neue Eintrag bessere Punkte oder gleiche Punkte aber bessere Zeit hat
+            
             if ($points > $minPoints || ($points == $minPoints && $time < $maxTime)) {
-                // Löschen Sie den Eintrag mit der niedrigsten Punktzahl oder der höchsten Zeit
+                
                 $sqlDelete = "DELETE FROM ranking_simple WHERE points = :minPoints AND time = :minTime LIMIT 1";
                 $stmtDelete = $dbConnection->prepare($sqlDelete);
                 $stmtDelete->bindParam(':minPoints', $minPoints, PDO::PARAM_INT);
@@ -59,29 +66,22 @@ function ranked_simple($dbConnection) {
     header('Location: /result.php');
 }
 
-function ranked_advanced($dbConnection) {
-    $name = $_POST['name'] ?? 'Test';
-    $points = $_POST['points'] ?? 101;
-    $time = $_POST['time'] ?? 140;
-    $animals = isset($_POST['animals']) ? (int) $_POST['animals'] : 1;
-    $geography = isset($_POST['geography']) ? (int) $_POST['geography'] : 0;
-    $history = isset($_POST['history']) ? (int) $_POST['history'] : 0;
-    $beginner = isset($_POST['beginner']) ? (int) $_POST['beginner'] : 1;
-    $advanced = isset($_POST['advanced']) ? (int) $_POST['advanced'] : 0;
+function rankedAdvanced($dbConnection, $name, $points, $time, $animals, $geography, $history, $beginner, $advanced) {
 
-    // Bestimmen Sie die Kategorie und Schwierigkeitsstufe
+
+   
     $category = $animals ? 'animals' : ($geography ? 'geography' : ($history ? 'history' : ''));
     $difficulty = $beginner ? 'beginner' : ($advanced ? 'advanced' : '');
 
     if ($category && $difficulty) {
-        // Überprüfen, ob die Tabelle bereits 10 Einträge hat für diese Kategorie und Schwierigkeit
+        
         $sqlCount = "SELECT COUNT(*) FROM ranking_advanced
                      WHERE $category = 1 AND $difficulty = 1";
         $stmtCount = $dbConnection->query($sqlCount);
         $count = $stmtCount->fetchColumn();
 
         if ($count >= 10) {
-            // Holen Sie sich den niedrigsten Punktestand und höchste Zeit für diesen Punktestand
+            
             $sqlMaxTime = "SELECT points, MAX(time) AS max_time
                            FROM ranking_advanced
                            WHERE $category = 1 AND $difficulty = 1
@@ -94,9 +94,9 @@ function ranked_advanced($dbConnection) {
             $maxPoints = $max['points'];
             $maxTime = $max['max_time'];
 
-            // Wenn der neue Eintrag bessere Punkte oder gleiche Punkte aber bessere Zeit hat
+          
             if ($points > $maxPoints || ($points == $maxPoints && $time < $maxTime)) {
-                // Löschen Sie den Eintrag mit der höchsten Zeit für den niedrigsten Punktestand
+                
                 $sqlDelete = "DELETE FROM ranking_advanced 
                               WHERE points = :maxPoints AND time = :maxTime 
                               AND $category = 1 AND $difficulty = 1 
@@ -106,7 +106,7 @@ function ranked_advanced($dbConnection) {
                 $stmtDelete->bindParam(':maxTime', $maxTime, PDO::PARAM_INT);
                 $stmtDelete->execute();
 
-                // Fügen Sie den neuen Eintrag ein
+               
                 $sqlInsert = "INSERT INTO ranking_advanced (name, points, time, animals, geography, history, beginner, advanced) 
                               VALUES (:name, :points, :time, :ani, :geo, :his, :beg, :adv)";
 
@@ -124,7 +124,7 @@ function ranked_advanced($dbConnection) {
                 $stmtInsert->execute();
             }
         } else {
-            // Wenn die Tabelle weniger als 10 Einträge hat für diese Kategorie und Schwierigkeit, fügen Sie den neuen Eintrag immer hinzu
+            
             $sqlInsert = "INSERT INTO ranking_advanced (name, points, time, animals, geography, history, beginner, advanced) 
                           VALUES (:name, :points, :time, :ani, :geo, :his, :beg, :adv)";
 
@@ -145,4 +145,45 @@ function ranked_advanced($dbConnection) {
     
     header('Location: /result.php');
     
+}
+
+function displayRankedAndvanced($dbConnection){
+
+    $category = $_SESSION['category'];
+    $difficulty = $_SESSION['level'];
+
+    $sqlDisplay= "SELECT name, points, time
+                    FROM ranking_advanced
+                    WHERE $category = 1 AND $difficulty = 1
+                    ORDER BY points DESC, time ASC";
+
+    try {
+        $stmt = $dbConnection->prepare($sqlDisplay);
+        $stmt->execute();
+        $displayRankedAdvanced = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    } catch (PDOException $e) {
+        echo 'Fehler bei der Abfrage: ' . $e->getMessage();
+    }
+
+    return $displayRankedAdvanced;
+}
+
+function setCategory(&$animals, &$geography, &$history, $category){
+    if ($category === 'animals') {
+        $animals = 1;
+    } elseif ($category === 'geography') {
+        $geography = 1;
+    } elseif ($category === 'history') {
+        $history = 1;
+    }
+}
+
+function setLevel(&$beginner, &$advanced, $level){
+    if ($level === 'beginner') {
+        $beginner = 1;
+    } elseif ($level === 'advanced') {
+        $advanced = 1;
+    }
+    header('Location: /rankeddisplay.php');
 }
