@@ -16,7 +16,7 @@ try {
     echo $e->getMessage();
 }
 
-function questioenIdandIndex($type, $dbConnection) {
+function questioenIdandIndex($type, $amount, $dbConnection) {
   $amount = 10;
 
   if (!isset($_SESSION['questionIds'])) {
