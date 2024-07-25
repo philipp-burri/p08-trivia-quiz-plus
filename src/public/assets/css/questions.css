@@ -73,7 +73,7 @@ body, html {
 }
 
 .answer-btn:hover {
-    transform: translateY(-7px); /* Vergrößert von -5px auf -7px */
+    transform: translateY(-1px); /* Vergrößert von -5px auf -7px */
     box-shadow: 0 7px 20px rgba(255, 255, 255, 0.4); /* Vergrößert von 5px/15px auf 7px/20px */
     
     background-color: #5a189a;
