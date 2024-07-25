@@ -4,13 +4,13 @@ if (!isset($_SESSION)) {
 }
 
 $name = $_POST['name'] ?? 'Test';
-$points = $_POST['points'] ?? 101;
-$time = $_POST['time'] ?? 140;
-$animals = isset($_POST['animals']) ? (int) $_POST['animals'] : 1;
+$points = $_POST['points'] ?? 250;
+$time = $_POST['time'] ?? 130;
+$animals = isset($_POST['animals']) ? (int) $_POST['animals'] : 0;
 $geography = isset($_POST['geography']) ? (int) $_POST['geography'] : 0;
-$history = isset($_POST['history']) ? (int) $_POST['history'] : 0;
-$beginner = isset($_POST['beginner']) ? (int) $_POST['beginner'] : 1;
-$advanced = isset($_POST['advanced']) ? (int) $_POST['advanced'] : 0;
+$history = isset($_POST['history']) ? (int) $_POST['history'] : 1;
+$beginner = isset($_POST['beginner']) ? (int) $_POST['beginner'] : 0;
+$advanced = isset($_POST['advanced']) ? (int) $_POST['advanced'] : 1;
 
 function rankedSimple($dbConnection, $name, $points, $time) {
     try {

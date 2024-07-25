@@ -7,11 +7,6 @@
     exit;
 } */
 
-$animals = '';
-$geography = '';
-$history = '';
-$beginner = '';
-$advanced= '';
 
 include dirname(dirname(__DIR__)). '/utils/db.php';
 include dirname(dirname(__DIR__)). '/utils/ranked.php';
