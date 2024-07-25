@@ -10,6 +10,9 @@
     padding: 20px 50px;
     height: 45px;
     z-index: 1000;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(180, 130, 230, 0.4);
 }
 
 .header-left, .header-right {

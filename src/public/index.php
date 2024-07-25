@@ -30,7 +30,17 @@
                     <li></li>
             </ul>
     </div>
-   
+    <script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    const circles = document.querySelectorAll('.circles li');
+    
+    circles.forEach(circle => {
+        circle.addEventListener('click', function() {
+            this.style.display = 'none';
+        });
+    });
+});
+</script>
 </body>
 </html>
 </body>

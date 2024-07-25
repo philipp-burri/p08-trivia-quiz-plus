@@ -96,7 +96,7 @@ body, html {
     overflow: hidden;
   }
   
-  .circles li{
+  .circles li {
     position: absolute;
     display: block;
     list-style: none;
@@ -105,13 +105,17 @@ body, html {
     background: rgba(255, 255, 255, 0.2);
     animation: animate 25s linear infinite;
     bottom: -150px;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease, opacity 0.3s ease;
     border-radius: 50%;
-  }
-  
-  .circles li:hover{
+}
+
+.circles li:hover {
     transform: scale(1.5);
-  }
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    opacity: 0.8;
+}
+
   .circles li:nth-child(1){
     left: 25%;
     width: 80px;
