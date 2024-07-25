@@ -1,3 +1,6 @@
+<?php if (!isset($_SESSION)) {
+    session_start();
+} ?>
 <?php
 include '../utils/db.php';
 
