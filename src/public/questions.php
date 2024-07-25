@@ -1,25 +1,68 @@
 <?php
 include '../utils/db.php';
-// Stellen Sie sicher, dass die POST-Daten empfangen wurden
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $category = $_POST['category'] ?? '';
-    $difficulty = $_POST['difficulty'] ?? '';
-    $mode = $_POST['mode'] ?? '';
-    
-    // Hier sollten Sie Ihre Datenbankabfrage durchführen
-    // $question = getQuestionFromDatabase($category, $difficulty);
-    // $answers = getAnswersFromDatabase($question_id);
+
+if (!isset($_SESSION)) {
+    session_start();
 }
 
-// Platzhalter für Frage und Antworten (nur für Testzwecke)
-$question = "Dies ist ein Platzhalter für die Frage?";
-$answers = [
-    ["answer" => "Antwort 1", "is_correct" => "1"],
-    ["answer" => "Antwort 2", "is_correct" => "0"],
-    ["answer" => "Antwort 3", "is_correct" => "0"],
-    ["answer" => "Antwort 4", "is_correct" => "0"]
-];
+$showCountdown = isset($_GET['start_countdown']) && $_GET['start_countdown'] == '1';
+
+$type = 'mixed'; // oder die gewünschte Kategorie
+$amount = 10; // Gesamtanzahl der Fragen für das Quiz
+
+// Initialisieren Sie die Session-Variablen, wenn das Quiz startet
+if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex'])) {
+    $questionData = questioenIdandIndex($type, $amount, $dbConnection);
+    $_SESSION['questionIds'] = $questionData['questionIds'];
+    $_SESSION['questionIndex'] = 0;
+    $_SESSION['score'] = 0;
+}
+
+// Überprüfen Sie die Antwort, wenn eine gesendet wurde
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
+    $selectedAnswerId = $_POST['answer'];
+    $currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
+    
+    // Überprüfen Sie, ob die Antwort korrekt ist
+    $checkAnswerQuery = "SELECT is_correct FROM answers WHERE id = :answerId AND question_id = :questionId";
+    $stmt = $dbConnection->prepare($checkAnswerQuery);
+    $stmt->execute([':answerId' => $selectedAnswerId, ':questionId' => $currentQuestionId]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($result && $result['is_correct'] == 1) {
+        $_SESSION['score']++;
+    }
+    
+    $_SESSION['questionIndex']++;
+}
+
+// Überprüfen Sie, ob das Quiz beendet ist
+if ($_SESSION['questionIndex'] >= count($_SESSION['questionIds'])) {
+    // Quiz ist beendet, zeigen Sie das Ergebnis an
+    $score = $_SESSION['score'];
+    $totalQuestions = count($_SESSION['questionIds']);
+    
+    // Setzen Sie die Session-Variablen zurück
+    unset($_SESSION['questionIds']);
+    unset($_SESSION['questionIndex']);
+    unset($_SESSION['score']);
+    
+    echo "Quiz beendet! Ihr Ergebnis: $score von $totalQuestions";
+    exit;
+}
+
+// Laden Sie die aktuelle Frage
+$currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
+$questionData = singlequestionID($currentQuestionId, $dbConnection);
+
+$question = $questionData['question'];
+$answers = $questionData['answers'];
+$isMulti = $questionData['is_multi'];
+
+// Mischen Sie die Antworten
+shuffle($answers);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,25 +73,11 @@ $answers = [
     <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        #countdown {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 40vw;
-            transition: all 0.5s ease;
-            opacity: 1;
-        }
-        #quiz-content {
-            display: none;
-        }
-    </style>
 </head>
 <body>
     <?php include '../utils/header.php'; ?>
     <div id="countdown-container"></div>
-    <div id="quiz-content" class="quiz-container">
+    <div id="quiz-content" class="quiz-container" style="display: none;">
         <div class="question"><?php echo htmlspecialchars($question); ?></div>
         <div class="answers">
             <?php foreach ($answers as $answer): ?>
@@ -56,45 +85,50 @@ $answers = [
             <?php endforeach; ?>
         </div>
     </div>
+    
     <script>
     $(document).ready(function () {
-        var counter = 3;
+        var showCountdown = <?php echo json_encode($showCountdown); ?>;
         
-        var timer = setInterval(function() {
-            $('#countdown').remove();
+        if (showCountdown) {
+            var counter = 3;
             
-            if (counter > 0) {
-                var countdown = $('<div id="countdown">' + counter + '</div>');
-                countdown.appendTo($('#countdown-container'));
-                setTimeout(() => {
-                    $('#countdown').css({ 'font-size': '0vw', 'opacity': 0 });
-                }, 20);
-            } else if (counter === 0) {
-                var countdown = $('<div id="countdown">GO!</div>');
-                countdown.appendTo($('#countdown-container'));
-                setTimeout(() => {
-                    $('#countdown').css({ 'font-size': '0vw', 'opacity': 0 });
-                }, 20);
-            } else {
-                clearInterval(timer);
-                $('#quiz-content').fadeIn(500);
-            }
-            
-            counter--;
-        }, 1000);
-
-        // Your existing quiz logic
-        document.querySelectorAll('.answer-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const isCorrect = this.getAttribute('data-correct') === '1';
-                this.style.backgroundColor = isCorrect ? 'green' : 'red';
-                console.log('Gewählte Antwort:', this.textContent, 'Korrekt:', isCorrect);
+            var timer = setInterval(function() {
+                $('#countdown').remove();
                 
-                // Here you can implement logic for moving to the next question
-                setTimeout(() => {
-                    location.reload(); // Reloads the page for the next question
-                }, 1000);
-            });
+                if (counter > 0) {
+                    var countdown = $('<div id="countdown">' + counter + '</div>');
+                    countdown.appendTo($('#countdown-container'));
+                    setTimeout(() => {
+                        $('#countdown').css({ 'font-size': '0vw', 'opacity': 0 });
+                    }, 20);
+                } else if (counter === 0) {
+                    var countdown = $('<div id="countdown">GO</div>');
+                    countdown.appendTo($('#countdown-container'));
+                    setTimeout(() => {
+                        $('#countdown').css({ 'font-size': '0vw', 'opacity': 0 });
+                    }, 20);
+                } else {
+                    clearInterval(timer);
+                    $('#quiz-content').fadeIn(500);
+                }
+                
+                counter--;
+            }, 1000);
+        } else {
+            $('#quiz-content').show();
+        }
+
+        // Quiz logic
+        $('.answer-btn').on('click', function() {
+            const isCorrect = $(this).data('correct') === 1;
+            $(this).css('backgroundColor', isCorrect ? 'green' : 'red');
+            console.log('Gewählte Antwort:', $(this).text(), 'Korrekt:', isCorrect);
+            
+            // Here you can implement logic for moving to the next question
+            setTimeout(() => {
+                location.reload(); // Reloads the page for the next question
+            }, 1000);
         });
     });
     </script>

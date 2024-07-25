@@ -1,3 +1,19 @@
+<?php
+include '../utils/db.php';
+
+if (!isset($_SESSION)) {
+    session_start();
+}
+
+$showCountdown = false;
+if (isset($_SESSION['show_countdown']) && $_SESSION['show_countdown']) {
+    $showCountdown = true;
+    $_SESSION['show_countdown'] = false; // Reset für nächste Fragen
+}
+
+$mode = $_SESSION['selected_mode'] ?? 'easy';
+?>
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -77,6 +93,42 @@
         <input type="hidden" name="difficulty" id="difficultyInput">
         <input type="hidden" name="mode" id="modeInput">
     </form>
+
+       <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var showCountdown = <?php echo json_encode($showCountdown); ?>;
+        
+        if (showCountdown) {
+            var counter = 3;
+            var countdownContainer = document.getElementById('countdown-container');
+            var quizContent = document.getElementById('quiz-content');
+            
+            var timer = setInterval(function() {
+                if (counter > 0) {
+                    countdownContainer.innerHTML = '<div id="countdown">' + counter + '</div>';
+                } else if (counter === 0) {
+                    countdownContainer.innerHTML = '<div id="countdown">GO</div>';
+                } else {
+                    clearInterval(timer);
+                    countdownContainer.style.display = 'none';
+                    quizContent.style.display = 'block';
+                }
+                
+                setTimeout(() => {
+                    var countdown = document.getElementById('countdown');
+                    if (countdown) {
+                        countdown.style.fontSize = '0vw';
+                        countdown.style.opacity = 0;
+                    }
+                }, 20);
+                
+                counter--;
+            }, 1000);
+        } else {
+            document.getElementById('quiz-content').style.display = 'block';
+        }
+    });
+    </script>
     
 </body>
 </html>
