@@ -1,0 +1,37 @@
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(90, 24, 154, 0.9);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+
+}
+
+.header-left, .header-right {
+    display: flex;
+    align-items: center;
+}
+
+.home-link, .leaderboard-link {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.home-link:hover, .leaderboard-link:hover {
+    color: #ffd700;
+}
+
+.home-link i {
+    margin-right: 5px;
+}
+
+.home-link span {
+    vertical-align: middle;
+}

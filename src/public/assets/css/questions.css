@@ -1,0 +1,64 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(-45deg, #8E2DE2, #7B1FA2, #6A1B9A);
+    background-size: 600% 600%; /* Vergrößert von 400% auf 600% */
+    animation: gradientBG 20s ease infinite; /* Verlängert von 15s auf 20s */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 1000px; /* Vergrößert von 800px auf 1000px */
+    padding: 30px; /* Vergrößert von 20px auf 30px */
+    box-sizing: border-box;
+}
+
+.quiz-container {
+   
+  
+    border-radius: 20px; /* Vergrößert von 15px auf 20px */
+    padding: 40px; /* Vergrößert von 30px auf 40px */
+    width: 700px; /* Vergrößert von 500px auf 700px */
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3); /* Vergrößert von 15px auf 20px */
+}
+
+.question {
+    
+    font-size: 2em; /* Vergrößert von 1.5em auf 2em */
+    color: white;
+    margin-bottom: 40px; /* Vergrößert von 30px auf 40px */
+    text-align: center;
+    font-weight: bold;
+}
+
+.answers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px; /* Vergrößert von 20px auf 30px */
+}
+
+.answer-btn {
+    padding: 20px; /* Vergrößert von 15px auf 20px */
+    border: 3px solid white; /* Vergrößert von 2px auf 3px */
+    background-color: #5a189a;
+    color: white;
+    cursor: pointer;
+    border-radius: 15px; /* Vergrößert von 10px auf 15px */
+    transition: all 0.3s ease;
+    font-size: 1.2em; /* Vergrößert von 1em auf 1.2em */
+}
+
+.answer-btn:hover {
+    transform: translateY(-7px); /* Vergrößert von -5px auf -7px */
+    box-shadow: 0 7px 20px rgba(255, 255, 255, 0.4); /* Vergrößert von 5px/15px auf 7px/20px */
+    background-color: rgba(255, 255, 255, 0.2);
+}
