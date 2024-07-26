@@ -15,33 +15,23 @@ try {
     echo $e->getMessage();
 }
 
-function questioenIdandIndex($type, $amount, $dbConnection) {
-  $amount = 10;
-
-  if (!isset($_SESSION['questionIds'])) {
-      if ($type != 'mixed') {
-          $query = "SELECT id FROM questions WHERE type = :type ORDER BY RAND() LIMIT :amount";
-      } else {
-          $query = "SELECT id FROM questions WHERE type != 'fail' ORDER BY RAND() LIMIT :amount";
-      }
+function questionIdAndIndex($category, $amount, $dbConnection) {
+  if (!isset($_SESSION['questionIds']) || $_SESSION['category'] !== $category) {
+      $query = "SELECT id FROM questions WHERE type = :category ORDER BY RAND() LIMIT :amount";
       $stmt = $dbConnection->prepare($query);
+      $stmt->bindParam(':category', $category, PDO::PARAM_STR);
       $stmt->bindParam(':amount', $amount, PDO::PARAM_INT);
-      if ($type != 'mixed') {
-          $stmt->bindParam(':type', $type, PDO::PARAM_STR);
-      }
       $stmt->execute();
       $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
       $questionIds = array_column($questions, 'id');
       $_SESSION['questionIds'] = $questionIds;
+      $_SESSION['category'] = $category;
   }
-
   if (!isset($_SESSION['questionIndex'])) {
       $_SESSION['questionIndex'] = 0;
   }
-
   $questionIndex = $_SESSION['questionIndex'];
   $questionId = $_SESSION['questionIds'][$questionIndex];
-
   return [
       'questionIndex' => $questionIndex,
       'questionId' => $questionId,

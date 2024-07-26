@@ -1,6 +1,3 @@
-<?php if (!isset($_SESSION)) {
-    session_start();
-} ?>
 <?php
 include '../utils/db.php';
 
@@ -10,17 +7,21 @@ if (!isset($_SESSION)) {
 
 $showCountdown = isset($_GET['start_countdown']) && $_GET['start_countdown'] == '1';
 
-$type = 'mixed'; // oder die gewünschte Kategorie
+// Lesen Sie die ausgewählte Kategorie aus
+$category = isset($_POST['category']) ? $_POST['category'] : (isset($_SESSION['category']) ? $_SESSION['category'] : '');
 $amount = 10; // Gesamtanzahl der Fragen für das Quiz
 
-// Initialisieren Sie die Session-Variablen, wenn das Quiz startet
-if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex'])) {
-    $questionData = questioenIdandIndex($type, $amount, $dbConnection);
+// Initialisieren Sie die Session-Variablen, wenn das Quiz startet oder eine neue Kategorie ausgewählt wurde
+if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_SESSION['category'] !== $category) {
+    $questionData = questionIdAndIndex($category, $amount, $dbConnection);
     $_SESSION['questionIds'] = $questionData['questionIds'];
     $_SESSION['questionIndex'] = 0;
     $_SESSION['score'] = 0;
+    $_SESSION['category'] = $category;
+    $_SESSION['totalQuestions'] = count($_SESSION['questionIds']);
 }
 
+// Überprüfen Sie die Antwort, wenn eine gesendet wurde
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
     $selectedAnswerId = $_POST['answer'];
     $currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
@@ -39,15 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
 }
 
 // Überprüfen Sie, ob das Quiz beendet ist
-if ($_SESSION['questionIndex'] >= count($_SESSION['questionIds'])) {
+if ($_SESSION['questionIndex'] >= $_SESSION['totalQuestions']) {
     $quizFinished = true;
     $score = $_SESSION['score'];
-    $totalQuestions = count($_SESSION['questionIds']);
-    
-    // Setzen Sie die Session-Variablen zurück
-    unset($_SESSION['questionIds']);
-    unset($_SESSION['questionIndex']);
-    unset($_SESSION['score']);
+    $totalQuestions = $_SESSION['totalQuestions'];
 } else {
     $quizFinished = false;
     // Laden Sie die aktuelle Frage
@@ -77,19 +73,20 @@ if ($_SESSION['questionIndex'] >= count($_SESSION['questionIds'])) {
     <?php include '../utils/header.php'; ?>
     <div id="countdown-container"></div>
     <div id="quiz-content" class="quiz-container" style="display: none;">
-        <?php if ($quizFinished): ?>
-            <div class="question">Quiz beendet! Ihr Ergebnis: <?php echo $score; ?> von <?php echo $totalQuestions; ?></div>
-        <?php else: ?>
-            <div class="question"><?php echo htmlspecialchars($question); ?></div>
-            <form method="POST" action="">
-                <div class="answers">
-                    <?php foreach ($answers as $answer): ?>
-                        <button type="submit" name="answer" value="<?php echo $answer['id']; ?>" class="answer-btn"><?php echo htmlspecialchars($answer['answer']); ?></button>
-                    <?php endforeach; ?>
-                </div>
-            </form>
-        <?php endif; ?>
-    </div>
+    <?php if ($quizFinished): ?>
+        <div class="question">Quiz beendet! Ihr Ergebnis: <?php echo $score; ?> von <?php echo $totalQuestions; ?></div>
+    <?php else: ?>
+        <div class="progress">Frage <?php echo $_SESSION['questionIndex'] + 1; ?> von <?php echo $_SESSION['totalQuestions']; ?></div>
+        <div class="question"><?php echo htmlspecialchars($question); ?></div>
+        <form method="POST" action="">
+            <div class="answers">
+                <?php foreach ($answers as $answer): ?>
+                    <button type="submit" name="answer" value="<?php echo $answer['id']; ?>" class="answer-btn"><?php echo htmlspecialchars($answer['answer']); ?></button>
+                <?php endforeach; ?>
+            </div>
+        </form>
+    <?php endif; ?>
+</div>
     
     <script>
     $(document).ready(function () {
