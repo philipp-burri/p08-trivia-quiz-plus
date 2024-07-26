@@ -21,7 +21,6 @@ if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex'])) {
     $_SESSION['score'] = 0;
 }
 
-// Überprüfen Sie die Antwort, wenn eine gesendet wurde
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
     $selectedAnswerId = $_POST['answer'];
     $currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
@@ -41,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
 
 // Überprüfen Sie, ob das Quiz beendet ist
 if ($_SESSION['questionIndex'] >= count($_SESSION['questionIds'])) {
-    // Quiz ist beendet, zeigen Sie das Ergebnis an
+    $quizFinished = true;
     $score = $_SESSION['score'];
     $totalQuestions = count($_SESSION['questionIds']);
     
@@ -49,23 +48,20 @@ if ($_SESSION['questionIndex'] >= count($_SESSION['questionIds'])) {
     unset($_SESSION['questionIds']);
     unset($_SESSION['questionIndex']);
     unset($_SESSION['score']);
-    
-    echo "Quiz beendet! Ihr Ergebnis: $score von $totalQuestions";
-    exit;
+} else {
+    $quizFinished = false;
+    // Laden Sie die aktuelle Frage
+    $currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
+    $questionData = singlequestionID($currentQuestionId, $dbConnection);
+
+    $question = $questionData['question'];
+    $answers = $questionData['answers'];
+    $isMulti = $questionData['is_multi'];
+
+    // Mischen Sie die Antworten
+    shuffle($answers);
 }
-
-// Laden Sie die aktuelle Frage
-$currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
-$questionData = singlequestionID($currentQuestionId, $dbConnection);
-
-$question = $questionData['question'];
-$answers = $questionData['answers'];
-$isMulti = $questionData['is_multi'];
-
-// Mischen Sie die Antworten
-shuffle($answers);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -81,12 +77,18 @@ shuffle($answers);
     <?php include '../utils/header.php'; ?>
     <div id="countdown-container"></div>
     <div id="quiz-content" class="quiz-container" style="display: none;">
-        <div class="question"><?php echo htmlspecialchars($question); ?></div>
-        <div class="answers">
-            <?php foreach ($answers as $answer): ?>
-                <button class="answer-btn" data-correct="<?php echo $answer['is_correct']; ?>"><?php echo htmlspecialchars($answer['answer']); ?></button>
-            <?php endforeach; ?>
-        </div>
+        <?php if ($quizFinished): ?>
+            <div class="question">Quiz beendet! Ihr Ergebnis: <?php echo $score; ?> von <?php echo $totalQuestions; ?></div>
+        <?php else: ?>
+            <div class="question"><?php echo htmlspecialchars($question); ?></div>
+            <form method="POST" action="">
+                <div class="answers">
+                    <?php foreach ($answers as $answer): ?>
+                        <button type="submit" name="answer" value="<?php echo $answer['id']; ?>" class="answer-btn"><?php echo htmlspecialchars($answer['answer']); ?></button>
+                    <?php endforeach; ?>
+                </div>
+            </form>
+        <?php endif; ?>
     </div>
     
     <script>
@@ -121,18 +123,6 @@ shuffle($answers);
         } else {
             $('#quiz-content').show();
         }
-
-        // Quiz logic
-        $('.answer-btn').on('click', function() {
-            const isCorrect = $(this).data('correct') === 1;
-            $(this).css('backgroundColor', isCorrect ? 'green' : 'red');
-            console.log('Gewählte Antwort:', $(this).text(), 'Korrekt:', isCorrect);
-            
-            // Here you can implement logic for moving to the next question
-            setTimeout(() => {
-                location.reload(); // Reloads the page for the next question
-            }, 1000);
-        });
     });
     </script>
 </body>
