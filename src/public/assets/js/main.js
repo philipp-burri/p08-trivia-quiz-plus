@@ -8,7 +8,7 @@
         categories.addEventListener('click', function(e) {
             if (e.target.closest('.card')) {
                 var selectedCategory = e.target.closest('.card').dataset.category;
-                document.getElementById('categoryInput').value = selectedCategory;  // Fügen Sie diese Zeile hinzu
+                document.getElementById('categoryInput').value = selectedCategory; 
                 categories.style.display = 'none';
                 difficulties.style.display = 'flex';
                 document.getElementById('selectionTitle').textContent = 'SCHWIERIGKEIT';

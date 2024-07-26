@@ -11,7 +11,7 @@ $showCountdown = isset($_GET['start_countdown']) && $_GET['start_countdown'] == 
 $category = isset($_POST['category']) ? $_POST['category'] : (isset($_SESSION['category']) ? $_SESSION['category'] : '');
 $amount = 10; // Gesamtanzahl der Fragen für das Quiz
 
-// Initialisieren Sie die Session-Variablen, wenn das Quiz startet oder eine neue Kategorie ausgewählt wurde
+// Fragen IDS werden geladen, Index und Score reset 
 if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_SESSION['category'] !== $category) {
     $questionData = questionIdAndIndex($category, $amount, $dbConnection);
     $_SESSION['questionIds'] = $questionData['questionIds'];
@@ -21,26 +21,26 @@ if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_
     $_SESSION['totalQuestions'] = count($_SESSION['questionIds']);
 }
 
-// Überprüfen Sie die Antwort, wenn eine gesendet wurde
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
+    // überprüft ob eine antwort gesendet wurde, 
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
     $selectedAnswerId = $_POST['answer'];
     $currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
     
-    // Überprüfen Sie, ob die Antwort korrekt ist
+    // überprüft ob die Antwort korrekt ist
     $checkAnswerQuery = "SELECT is_correct FROM answers WHERE id = :answerId AND question_id = :questionId";
     $stmt = $dbConnection->prepare($checkAnswerQuery);
     $stmt->execute([':answerId' => $selectedAnswerId, ':questionId' => $currentQuestionId]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
+    //aktualisierung index und score
     if ($result && $result['is_correct'] == 1) {
         $_SESSION['score']++;
     }
-    
     $_SESSION['questionIndex']++;
 }
 
-// Überprüfen Sie, ob das Quiz beendet ist
-if ($_SESSION['questionIndex'] >= $_SESSION['totalQuestions']) {
+    // Überprüft ob Quiz beendet ist
+    if ($_SESSION['questionIndex'] >= $_SESSION['totalQuestions']) {
     $quizFinished = true;
     $score = $_SESSION['score'];
     $totalQuestions = $_SESSION['totalQuestions'];
