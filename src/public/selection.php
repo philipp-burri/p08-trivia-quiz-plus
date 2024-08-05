@@ -89,9 +89,9 @@ $mode = $_SESSION['selected_mode'] ?? 'easy';
         </div>
     </div>
     <form id="quizForm" action="questions.php" method="post">
-        <input type="hidden" name="category" id="categoryInput">
-        <input type="hidden" name="difficulty" id="difficultyInput">
-        <input type="hidden" name="mode" id="modeInput">
+    <input type="hidden" name="category" id="categoryInput">
+    <input type="hidden" name="difficulty" id="difficultyInput">
+    <input type="hidden" name="mode" id="modeInput">
     </form>
 
        <script>

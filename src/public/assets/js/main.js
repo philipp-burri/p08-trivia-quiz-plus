@@ -1,36 +1,35 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const categories = document.getElementById('categories');
-    const difficulties = document.getElementById('difficulties');
-    const modes = document.getElementById('modes');
-    const form = document.getElementById('quizForm');
-    const selectionTitle = document.getElementById('selectionTitle');
-    let selectedCategory, selectedDifficulty, selectedMode;
 
-    categories.addEventListener('click', function(e) {
-        if (e.target.closest('.card')) {
-            selectedCategory = e.target.closest('.card').dataset.category;
-            document.getElementById('categoryInput').value = selectedCategory;
-            categories.style.display = 'none';
-            difficulties.style.display = 'flex';
-            selectionTitle.textContent = 'SCHWIERIGKEITSGRAD';
-        }
-    });
+    document.addEventListener('DOMContentLoaded', function() {
+        var categories = document.getElementById('categories');
+        var difficulties = document.getElementById('difficulties');
+        var modes = document.getElementById('modes');
+        var form = document.getElementById('quizForm');
 
-    difficulties.addEventListener('click', function(e) {
-        if (e.target.closest('.card')) {
-            selectedDifficulty = e.target.closest('.card').dataset.difficulty;
-            document.getElementById('difficultyInput').value = selectedDifficulty;
-            difficulties.style.display = 'none';
-            modes.style.display = 'flex';
-            selectionTitle.textContent = 'SPIELMODUS';
-        }
-    });
+        categories.addEventListener('click', function(e) {
+            if (e.target.closest('.card')) {
+                var selectedCategory = e.target.closest('.card').dataset.category;
+                document.getElementById('categoryInput').value = selectedCategory; 
+                categories.style.display = 'none';
+                difficulties.style.display = 'flex';
+                document.getElementById('selectionTitle').textContent = 'SCHWIERIGKEIT';
+            }
+        });
 
-    modes.addEventListener('click', function(e) {
-        if (e.target.closest('.card')) {
-            selectedMode = e.target.closest('.card').dataset.mode;
-            document.getElementById('modeInput').value = selectedMode;
-            form.submit();
-        }
+        difficulties.addEventListener('click', function(e) {
+            if (e.target.closest('.card')) {
+                var selectedDifficulty = e.target.closest('.card').dataset.difficulty;
+                document.getElementById('difficultyInput').value = selectedDifficulty;
+                difficulties.style.display = 'none';
+                modes.style.display = 'flex';
+                document.getElementById('selectionTitle').textContent = 'MODUS';
+            }
+        });
+
+        modes.addEventListener('click', function(e) {
+            if (e.target.closest('.card')) {
+                var selectedMode = e.target.closest('.card').dataset.mode;
+                document.getElementById('modeInput').value = selectedMode;
+                form.submit();
+            }
+        });
     });
-});

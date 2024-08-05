@@ -15,37 +15,36 @@ try {
     echo $e->getMessage();
 }
 
-function questioenIdandIndex($type, $amount, $dbConnection) {
-  $amount = 10;
-
-  if (!isset($_SESSION['questionIds'])) {
-      if ($type != 'mixed') {
-          $query = "SELECT id FROM questions WHERE type = :type ORDER BY RAND() LIMIT :amount";
-      } else {
-          $query = "SELECT id FROM questions WHERE type != 'fail' ORDER BY RAND() LIMIT :amount";
-      }
+function questionIdandIndex($category, $dbConnection, $mode = 'standard') {
+  if ($mode === 'elimination') {
+      $singleChoiceCount = 10;
+      $query = "SELECT id FROM questions WHERE type = :category AND is_multi = 0 ORDER BY RAND() LIMIT :singleChoiceCount";
+      
       $stmt = $dbConnection->prepare($query);
-      $stmt->bindParam(':amount', $amount, PDO::PARAM_INT);
-      if ($type != 'mixed') {
-          $stmt->bindParam(':type', $type, PDO::PARAM_STR);
-      }
-      $stmt->execute();
-      $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
-      $questionIds = array_column($questions, 'id');
-      $_SESSION['questionIds'] = $questionIds;
+      $stmt->bindParam(':category', $category, PDO::PARAM_STR);
+      $stmt->bindParam(':singleChoiceCount', $singleChoiceCount, PDO::PARAM_INT);
+  } else {
+      $multipleChoiceCount = 2;
+      $singleChoiceCount = 8;
+      $query = "
+          (SELECT id FROM questions WHERE type = :category AND is_multi = 1 ORDER BY RAND() LIMIT :multipleChoiceCount)
+          UNION ALL
+          (SELECT id FROM questions WHERE type = :category AND is_multi = 0 ORDER BY RAND() LIMIT :singleChoiceCount)
+      ";
+      
+      $stmt = $dbConnection->prepare($query);
+      $stmt->bindParam(':category', $category, PDO::PARAM_STR);
+      $stmt->bindParam(':multipleChoiceCount', $multipleChoiceCount, PDO::PARAM_INT);
+      $stmt->bindParam(':singleChoiceCount', $singleChoiceCount, PDO::PARAM_INT);
   }
-
-  if (!isset($_SESSION['questionIndex'])) {
-      $_SESSION['questionIndex'] = 0;
-  }
-
-  $questionIndex = $_SESSION['questionIndex'];
-  $questionId = $_SESSION['questionIds'][$questionIndex];
-
+  
+  $stmt->execute();
+  $questionIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+  shuffle($questionIds);
+  
   return [
-      'questionIndex' => $questionIndex,
-      'questionId' => $questionId,
-      'questionIds' => $_SESSION['questionIds']
+      'questionIds' => $questionIds,
+      'questionIndex' => 0
   ];
 }
 
