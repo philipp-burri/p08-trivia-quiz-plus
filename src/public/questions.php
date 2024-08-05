@@ -97,7 +97,7 @@ if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_
         <form method="POST" action="">
     <div class="answers">
         <?php foreach ($answers as $answer): ?>
-            <?php if ($isMulti): ?>
+         <?php if ($isMulti): ?>
     <div class="answer-btn multi-choice">
         <input type="checkbox" id="answer_<?php echo $answer['id']; ?>" name="answers[]" value="<?php echo $answer['id']; ?>">
         <label for="answer_<?php echo $answer['id']; ?>">

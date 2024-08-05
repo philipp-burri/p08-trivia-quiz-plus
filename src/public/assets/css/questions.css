@@ -9,6 +9,7 @@
     color: white;
     font-family: 'Roboto', sans-serif;
 }
+
 #quiz-content {
     display: none;
 }
@@ -20,8 +21,7 @@ body, html {
     width: 100%;
     font-family: 'Roboto', sans-serif;
     background: linear-gradient(90deg, #6A1B9A, #4A0E82);
-    
-    animation: gradientBG 15s ease infinite; /* Verlängert von 15s auf 20s */
+    animation: gradientBG 15s ease infinite;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -32,60 +32,43 @@ body, html {
     justify-content: center;
     align-items: center;
     width: 100%;
-    max-width: 1000px; /* Vergrößert von 800px auf 1000px */
-    padding: 30px; /* Vergrößert von 20px auf 30px */
+    max-width: 1000px;
+    padding: 30px;
     box-sizing: border-box;
 }
 
 .quiz-container {
-   
-  
-    border-radius: 20px; /* Vergrößert von 15px auf 20px */
-    padding: 40px; /* Vergrößert von 30px auf 40px */
-    width: 700px; /* Vergrößert von 500px auf 700px */
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3); /* Vergrößert von 15px auf 20px */
+    border-radius: 20px;
+    padding: 40px;
+    width: 700px;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    display: flex;
+    flex-direction: column;
+    min-height: 500px;
 }
 
 .question {
-    
-    font-size: 2em; /* Vergrößert von 1.5em auf 2em */
+    font-size: 2em;
     color: white;
-    margin-bottom: 40px; /* Vergrößert von 30px auf 40px */
+    margin-bottom: 40px;
     text-align: center;
     font-weight: bold;
+    flex: 0 0 auto;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
 .answers {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 30px; /* Vergrößert von 20px auf 30px */
+    gap: 30px;
+    flex: 1 0 auto;
 }
 
-.answer-btn {
-    padding: 20px; /* Vergrößert von 15px auf 20px */
-    border: 3px solid white; /* Vergrößert von 2px auf 3px */
-    background-color: rgba(255, 255, 255, 0.2);
-    color: white;
-    cursor: pointer;
-    border-radius: 15px; /* Vergrößert von 10px auf 15px */
-    transition: all 0.3s ease;
-    font-size: 1.2em; /* Vergrößert von 1em auf 1.2em */
-}
-
-.answer-btn:hover {
-    transform: translateY(-1px); /* Vergrößert von -5px auf -7px */
-    box-shadow: 0 7px 20px rgba(255, 255, 255, 0.4); /* Vergrößert von 5px/15px auf 7px/20px */
-    
-    background-color: #5a189a;
-}
-
-
-/* mp choice */
-
+.answer-btn,
 .answer-btn.multi-choice {
-    position: relative;
     padding: 20px;
-    padding-right: 40px;
     border: 3px solid white;
     background-color: rgba(255, 255, 255, 0.2);
     color: white;
@@ -95,6 +78,12 @@ body, html {
     font-size: 1.2em;
     display: flex;
     align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
 }
 
 
@@ -105,11 +94,12 @@ body, html {
     height: 0;
     width: 0;
 }
+
 .answer-btn.multi-choice label {
     cursor: pointer;
-    flex-grow: 1;
     display: flex;
     align-items: center;
+    justify-content: center;
     width: 100%;
     height: 100%;
     margin: 0;
@@ -117,11 +107,13 @@ body, html {
     box-sizing: border-box;
 }
 
+.answer-btn:hover,
 .answer-btn.multi-choice:hover {
     transform: translateY(-1px);
     box-shadow: 0 7px 20px rgba(255, 255, 255, 0.4);
     background-color: #5a189a;
 }
+
 .answer-btn.multi-choice input[type="checkbox"]:checked + label::after {
     content: '✓';
     position: absolute;
@@ -130,12 +122,6 @@ body, html {
     transform: translateY(-50%);
     color: white;
     font-size: 1.2em;
-}
-
-.answer-btn.multi-choice label {
-    margin-right: 10px; /* Platz für das Häkchen */
-    cursor: pointer;
-    flex-grow: 1;
 }
 
 .submit-btn-q {
@@ -150,12 +136,23 @@ body, html {
     font-size: 1.2em;
     margin-top: 30px;
     text-align: center;
-    width: 50%; /* Fügen Sie diese Zeile hinzu */
-    justify-self: center; /* Fügen Sie diese Zeile hinzu */
+    width: 50%;
+    justify-self: center;
 }
 
 .submit-btn-q:hover {
     transform: translateY(-1px);
     box-shadow: 0 7px 20px rgba(255, 255, 255, 0.4);
-    
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
