@@ -13,9 +13,9 @@ $amount = 10; // Gesamtanzahl der Fragen für das Quiz
 
 // Fragen IDS werden geladen, Index und Score reset 
 if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_SESSION['category'] !== $category) {
-    $questionData = questionIdAndIndex($category, $amount, $dbConnection);
+    $questionData = questionIdandIndex($category, $dbConnection);
     $_SESSION['questionIds'] = $questionData['questionIds'];
-    $_SESSION['questionIndex'] = 0;
+    $_SESSION['questionIndex'] = $questionData['questionIndex'];
     $_SESSION['score'] = 0;
     $_SESSION['category'] = $category;
     $_SESSION['totalQuestions'] = count($_SESSION['questionIds']);
