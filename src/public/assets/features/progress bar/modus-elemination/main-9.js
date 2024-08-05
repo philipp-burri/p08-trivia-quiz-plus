@@ -25,32 +25,20 @@ const questions = [
         correct: 2
     }
 ];
+
 let currentQuestion = 0;
-let timeLeft = 10;
-let timer;
 
 const questionEl = document.getElementById('question');
 const answersEl = document.getElementById('answers');
-const timerEl = document.querySelector('.timer');
-
-const timerRect = document.querySelector('.timer-ring__circle');
 const progressRect = document.querySelector('.progress-ring__circle');
-const timerCircumference = 1120; // Umfang des äußeren Quadrats (2 * (Breite + Höhe))
-const progressCircumference = 992; // Umfang des inneren Quadrats
+const progressCircumference = 2384;
 
-timerRect.style.strokeDasharray = `${timerCircumference} ${timerCircumference}`;
-timerRect.style.strokeDashoffset = 0;
 progressRect.style.strokeDasharray = `${progressCircumference} ${progressCircumference}`;
 progressRect.style.strokeDashoffset = progressCircumference;
 
 function setProgress(percent) {
     const offset = progressCircumference - percent / 100 * progressCircumference;
     progressRect.style.strokeDashoffset = offset;
-}
-
-function setTimer(percent) {
-    const offset = percent / 100 * timerCircumference;
-    timerRect.style.strokeDashoffset = offset;
 }
 
 function loadQuestion() {
@@ -60,29 +48,14 @@ function loadQuestion() {
     question.answers.forEach((answer, index) => {
         const button = document.createElement('button');
         button.textContent = answer;
+        button.classList.add('answer-btn');
         button.addEventListener('click', () => selectAnswer(index));
         answersEl.appendChild(button);
     });
-    timeLeft = 10;
     setProgress((currentQuestion / questions.length) * 100);
-    setTimer(0);
-    startTimer();
-}
-
-function startTimer() {
-    timer = setInterval(() => {
-        timeLeft--;
-        timerEl.textContent = timeLeft;
-        setTimer((10 - timeLeft) * 10);
-        if (timeLeft <= 0) {
-            clearInterval(timer);
-            nextQuestion();
-        }
-    }, 1000);
 }
 
 function selectAnswer(index) {
-    clearInterval(timer);
     if (index === questions[currentQuestion].correct) {
         console.log("Richtig!");
     } else {
@@ -98,7 +71,7 @@ function nextQuestion() {
     } else {
         questionEl.textContent = "Quiz beendet!";
         answersEl.innerHTML = '';
-        timerEl.style.display = 'none';
+        setProgress(100); // Setzt den Fortschrittsbalken auf 100%
     }
 }
 
