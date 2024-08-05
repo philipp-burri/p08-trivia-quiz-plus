@@ -15,25 +15,33 @@ try {
     echo $e->getMessage();
 }
 
-function questionIdandIndex($category, $dbConnection) {
-  $multipleChoiceCount = 2;
-  $singleChoiceCount = 8;
-
-  $query = "
-      (SELECT id FROM questions WHERE type = :category AND is_multi = 1 ORDER BY RAND() LIMIT :multipleChoiceCount)
-      UNION ALL
-      (SELECT id FROM questions WHERE type = :category AND is_multi = 0 ORDER BY RAND() LIMIT :singleChoiceCount)
-  ";
+function questionIdandIndex($category, $dbConnection, $mode = 'standard') {
+  if ($mode === 'elimination') {
+      $singleChoiceCount = 10;
+      $query = "SELECT id FROM questions WHERE type = :category AND is_multi = 0 ORDER BY RAND() LIMIT :singleChoiceCount";
+      
+      $stmt = $dbConnection->prepare($query);
+      $stmt->bindParam(':category', $category, PDO::PARAM_STR);
+      $stmt->bindParam(':singleChoiceCount', $singleChoiceCount, PDO::PARAM_INT);
+  } else {
+      $multipleChoiceCount = 2;
+      $singleChoiceCount = 8;
+      $query = "
+          (SELECT id FROM questions WHERE type = :category AND is_multi = 1 ORDER BY RAND() LIMIT :multipleChoiceCount)
+          UNION ALL
+          (SELECT id FROM questions WHERE type = :category AND is_multi = 0 ORDER BY RAND() LIMIT :singleChoiceCount)
+      ";
+      
+      $stmt = $dbConnection->prepare($query);
+      $stmt->bindParam(':category', $category, PDO::PARAM_STR);
+      $stmt->bindParam(':multipleChoiceCount', $multipleChoiceCount, PDO::PARAM_INT);
+      $stmt->bindParam(':singleChoiceCount', $singleChoiceCount, PDO::PARAM_INT);
+  }
   
-  $stmt = $dbConnection->prepare($query);
-  $stmt->bindParam(':category', $category, PDO::PARAM_STR);
-  $stmt->bindParam(':multipleChoiceCount', $multipleChoiceCount, PDO::PARAM_INT);
-  $stmt->bindParam(':singleChoiceCount', $singleChoiceCount, PDO::PARAM_INT);
   $stmt->execute();
-
   $questionIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
   shuffle($questionIds);
-
+  
   return [
       'questionIds' => $questionIds,
       'questionIndex' => 0
