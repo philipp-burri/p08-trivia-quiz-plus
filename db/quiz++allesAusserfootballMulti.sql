@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Jul 24, 2024 at 02:49 PM
+-- Generation Time: Aug 05, 2024 at 01:06 PM
 -- Server version: 9.0.1
 -- PHP Version: 8.2.8
 
@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `answers` (
   `id` int NOT NULL,
-  `answer` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `answer` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_correct` tinyint(1) NOT NULL,
   `question_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -483,13 +483,24 @@ INSERT INTO `answers` (`id`, `answer`, `is_correct`, `question_id`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `name_suffix`
+--
+
+CREATE TABLE `name_suffix` (
+  `base_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `suffix` int DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `questions`
 --
 
 CREATE TABLE `questions` (
   `id` int NOT NULL,
   `question` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `level` int NOT NULL,
   `is_multi` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -610,7 +621,6 @@ INSERT INTO `questions` (`id`, `question`, `type`, `level`, `is_multi`) VALUES
 (109, 'Gegen welche Mannschaft verlor die Schweiz im Achtelfinale der FIFA Weltmeisterschaft 2006 in Deutschland?', 'football', 1, 0),
 (110, 'Wer ist der aktuelle Trainer der Schweizer Nationalmannschaft?', 'football', 1, 0);
 
-
 -- --------------------------------------------------------
 
 --
@@ -619,7 +629,7 @@ INSERT INTO `questions` (`id`, `question`, `type`, `level`, `is_multi`) VALUES
 
 CREATE TABLE `ranking_advanced` (
   `id` int NOT NULL,
-  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `points` int NOT NULL,
   `time` int NOT NULL,
   `animals` tinyint(1) NOT NULL,
@@ -630,44 +640,40 @@ CREATE TABLE `ranking_advanced` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `ranking_advanced`
+-- Triggers `ranking_advanced`
 --
+DELIMITER $$
+CREATE TRIGGER `before_insert_ranking_advanced` BEFORE INSERT ON `ranking_advanced` FOR EACH ROW BEGIN
+    DECLARE base_name VARCHAR(255);
+    DECLARE suffix INT DEFAULT 0;
+    DECLARE new_name VARCHAR(255);
+    DECLARE suffix_record INT;
 
-INSERT INTO `ranking_advanced` (`id`, `name`, `points`, `time`, `animals`, `geography`, `history`, `beginner`, `advanced`) VALUES
-(13, 'Test', 100, 166, 1, 0, 0, 1, 0),
-(14, 'Test', 100, 166, 1, 0, 0, 1, 0),
-(15, 'Test', 100, 166, 1, 0, 0, 1, 0),
-(16, 'Test', 100, 166, 1, 0, 0, 1, 0);
+    SET base_name = NEW.name;
+    SET new_name = base_name;
 
--- --------------------------------------------------------
+    -- Überprüfen und Anpassen des Namens
+    WHILE EXISTS (SELECT 1 FROM ranking_advanced WHERE name = new_name) DO
+        -- Check if base_name exists in the suffix table
+        SELECT suffix INTO suffix_record FROM name_suffix WHERE base_name = base_name FOR UPDATE;
 
---
--- Table structure for table `ranking_simple`
---
+        IF suffix_record IS NULL THEN
+            -- Insert new base_name into suffix table
+            INSERT INTO name_suffix (base_name, suffix) VALUES (base_name, 1);
+            SET suffix = 1;
+        ELSE
+            -- Update suffix value and set new suffix
+            SET suffix = suffix_record + 1;
+            UPDATE name_suffix SET suffix = suffix WHERE base_name = base_name;
+        END IF;
 
-CREATE TABLE `ranking_simple` (
-  `id` int NOT NULL,
-  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `points` int NOT NULL,
-  `time` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        SET new_name = CONCAT(base_name, '_', suffix);
+    END WHILE;
 
---
--- Dumping data for table `ranking_simple`
---
-
-INSERT INTO `ranking_simple` (`id`, `name`, `points`, `time`) VALUES
-(38, 'Test', 101, 166),
-(39, 'Test', 101, 166),
-(40, 'Test', 101, 166),
-(41, 'Test', 101, 166),
-(42, 'Test', 101, 166),
-(43, 'Test', 101, 166),
-(44, 'Test', 101, 166),
-(45, 'Test', 101, 166),
-(46, 'Test', 101, 166),
-(47, 'Test', 102, 170),
-(48, 'Test', 101, 165);
+    SET NEW.name = new_name;
+END
+$$
+DELIMITER ;
 
 --
 -- Indexes for dumped tables
@@ -679,6 +685,12 @@ INSERT INTO `ranking_simple` (`id`, `name`, `points`, `time`) VALUES
 ALTER TABLE `answers`
   ADD PRIMARY KEY (`id`),
   ADD KEY `question_id` (`question_id`);
+
+--
+-- Indexes for table `name_suffix`
+--
+ALTER TABLE `name_suffix`
+  ADD PRIMARY KEY (`base_name`);
 
 --
 -- Indexes for table `questions`
@@ -693,12 +705,6 @@ ALTER TABLE `ranking_advanced`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `ranking_simple`
---
-ALTER TABLE `ranking_simple`
-  ADD PRIMARY KEY (`id`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -706,25 +712,19 @@ ALTER TABLE `ranking_simple`
 -- AUTO_INCREMENT for table `answers`
 --
 ALTER TABLE `answers`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=361;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=441;
 
 --
 -- AUTO_INCREMENT for table `questions`
 --
 ALTER TABLE `questions`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=111;
 
 --
 -- AUTO_INCREMENT for table `ranking_advanced`
 --
 ALTER TABLE `ranking_advanced`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
-
---
--- AUTO_INCREMENT for table `ranking_simple`
---
-ALTER TABLE `ranking_simple`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- Constraints for dumped tables
