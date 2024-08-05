@@ -78,3 +78,84 @@ body, html {
     
     background-color: #5a189a;
 }
+
+
+/* mp choice */
+
+.answer-btn.multi-choice {
+    position: relative;
+    padding: 20px;
+    padding-right: 40px;
+    border: 3px solid white;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    font-size: 1.2em;
+    display: flex;
+    align-items: center;
+}
+
+
+.answer-btn.multi-choice input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+.answer-btn.multi-choice label {
+    cursor: pointer;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.answer-btn.multi-choice:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 7px 20px rgba(255, 255, 255, 0.4);
+    background-color: #5a189a;
+}
+.answer-btn.multi-choice input[type="checkbox"]:checked + label::after {
+    content: '✓';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 1.2em;
+}
+
+.answer-btn.multi-choice label {
+    margin-right: 10px; /* Platz für das Häkchen */
+    cursor: pointer;
+    flex-grow: 1;
+}
+
+.submit-btn-q {
+    grid-column: 1 / -1;
+    padding: 20px;
+    border: 3px solid white;
+    background-color: rgb(255, 255, 255);
+    color: #5a189a;
+    cursor: pointer;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    font-size: 1.2em;
+    margin-top: 30px;
+    text-align: center;
+    width: 50%; /* Fügen Sie diese Zeile hinzu */
+    justify-self: center; /* Fügen Sie diese Zeile hinzu */
+}
+
+.submit-btn-q:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 7px 20px rgba(255, 255, 255, 0.4);
+    
+}
