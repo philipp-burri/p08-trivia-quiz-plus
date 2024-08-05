@@ -33,7 +33,6 @@ if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_
                 return $answer['is_correct'] == 1;
             });
             $correctAnswerIds = array_column($correctAnswers, 'id');
-            
             $isCorrect = count($selectedAnswers) == count($correctAnswerIds) &&
                          empty(array_diff($selectedAnswers, $correctAnswerIds));
     
@@ -41,6 +40,7 @@ if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_
                 $_SESSION['score']++;
             }
             $_SESSION['questionIndex']++;
+
         } elseif (!$isMulti && isset($_POST['answer'])) {
             $selectedAnswerId = $_POST['answer'];
             $checkAnswerQuery = "SELECT is_correct FROM answers WHERE id = :answerId AND question_id = :questionId";
@@ -88,35 +88,51 @@ if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_
 <body>
     <?php include '../utils/header.php'; ?>
     <div id="countdown-container"></div>
-    <div id="quiz-content" class="quiz-container" style="display: none;">
+<div id="quiz-content" class="quiz-container">
     <?php if ($quizFinished): ?>
-        <div class="question">Quiz beendet! Ihr Ergebnis: <?php echo $score; ?> von <?php echo $totalQuestions; ?></div>
+        <div class="question">
+            Quiz beendet! Ihr Ergebnis: <?php echo $score; ?> von <?php echo $totalQuestions; ?>
+        </div>
     <?php else: ?>
-        <div class="progress">Frage <?php echo $_SESSION['questionIndex'] + 1; ?> von <?php echo $_SESSION['totalQuestions']; ?></div>
-        <div class="question"><?php echo htmlspecialchars($question); ?></div>
+        <div class="progress">
+            Frage <?php echo $_SESSION['questionIndex'] + 1; ?> von <?php echo $_SESSION['totalQuestions']; ?>
+        </div>
+        <div class="question">
+            <?php echo htmlspecialchars($question); ?>
+        </div>
         <form method="POST" action="">
-    <div class="answers">
-        <?php foreach ($answers as $answer): ?>
-         <?php if ($isMulti): ?>
-    <div class="answer-btn multi-choice">
-        <input type="checkbox" id="answer_<?php echo $answer['id']; ?>" name="answers[]" value="<?php echo $answer['id']; ?>">
-        <label for="answer_<?php echo $answer['id']; ?>">
-            <?php echo htmlspecialchars($answer['answer']); ?>
-        </label>
-    </div>
-<?php else: ?>
-    <button type="submit" name="answer" value="<?php echo $answer['id']; ?>" class="answer-btn"><?php echo htmlspecialchars($answer['answer']); ?></button>
-<?php endif; ?>
-        <?php endforeach; ?>
-    
-    <?php if ($isMulti): ?>
-        <button type="submit" name="submit_multi" class="submit-btn-q">Antworten einreichen</button>
+            <div class="answers">
+                <?php foreach ($answers as $answer): ?>
+                    <?php if ($isMulti): ?>
+                        <div class="answer-btn multi-choice">
+                            <input type="checkbox" 
+                                   id="answer_<?php echo $answer['id']; ?>" 
+                                   name="answers[]" 
+                                   value="<?php echo $answer['id']; ?>">
+                            <label for="answer_<?php echo $answer['id']; ?>">
+                                <?php echo htmlspecialchars($answer['answer']); ?>
+                            </label>
+                        </div>
+                    <?php else: ?>
+                        <button type="submit" 
+                                name="answer" 
+                                value="<?php echo $answer['id']; ?>" 
+                                class="answer-btn">
+                            <?php echo htmlspecialchars($answer['answer']); ?>
+                        </button>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+                
+                <?php if ($isMulti): ?>
+                    <button type="submit" name="submit_multi" class="submit-btn-q">
+                        Antworten einreichen
+                    </button>
+                <?php endif; ?>
+            </div>
+        </form>
     <?php endif; ?>
 </div>
-</form>
-    <?php endif; ?>
-</div>
-    
+
     <script>
     $(document).ready(function () {
         var showCountdown = <?php echo json_encode($showCountdown); ?>;
