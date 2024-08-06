@@ -23,6 +23,7 @@ body, html {
     background: linear-gradient(90deg, #6A1B9A, #4A0E82);
     animation: gradientBG 15s ease infinite;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }

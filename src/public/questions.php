@@ -83,12 +83,14 @@ if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/header.css">
     <link rel="stylesheet" href="assets/css/questions.css">
+    <link rel="stylesheet" href="assets/css/progressBarStand.css">
     <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <?php include '../utils/header.php'; ?>
+    <?php include '../utils/progressBarStand.php'; ?>
     <div id="countdown-container"></div>
 <div id="quiz-content" class="quiz-container">
     <?php if ($quizFinished): ?>
@@ -169,5 +171,6 @@ if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_
         }
     });
     </script>
+    <script src="assets/js/progressBarStand.js"></script>
 </body>
 </html>

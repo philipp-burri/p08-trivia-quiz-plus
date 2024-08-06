@@ -4,8 +4,8 @@ if (!isset($_SESSION)) {
 }
 
 $name = $_POST['name'] ?? 'Test';
-$points = $_POST['points'] ?? 250;
-$time = $_POST['time'] ?? 130;
+$points = $_POST['points'] ?? 300;
+$time = $_POST['time'] ?? 125;
 $animals = isset($_POST['animals']) ? (int) $_POST['animals'] : 0;
 $geography = isset($_POST['geography']) ? (int) $_POST['geography'] : 0;
 $history = isset($_POST['history']) ? (int) $_POST['history'] : 1;

@@ -1,0 +1,43 @@
+.progress-container {
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.progress-bar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.step, .bar {
+    transition: background-color 0.4s ease, width 0.4s ease;
+}
+
+.step {
+    width: 30px;
+    height: 30px;
+    background-color: #ccc;
+    border-radius: 50%;
+    z-index: 10;
+    position: relative;
+}
+
+.step.active {
+    background-color: #00ff00;
+}
+
+.bar {
+    flex-grow: 1;
+    height:12px;
+    background-color: #ccc;
+    position: relative;
+}
+
+.bar.active {
+    background-color: #00ff00;
+}
