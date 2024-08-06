@@ -15,6 +15,12 @@ try {
     echo $e->getMessage();
 }
 
+function prettyPrint($a){
+  echo '<pre>';
+  print_r($a);
+  echo '</pre>';
+}
+
 function questionIdandIndex($category, $dbConnection, $mode = 'standard') {
   if ($mode === 'elimination') {
       $singleChoiceCount = 10;
