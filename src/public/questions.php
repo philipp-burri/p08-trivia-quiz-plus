@@ -101,6 +101,7 @@ $currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionI
 <body>
     <?php include '../utils/header.php'; ?>
     <!-- <?php include '../utils/progressBarStand.php'; ?> -->
+     <?php prettyPrint($_SESSION['questionIndex']) ?>
     <div id="countdown-container"></div>
     <div class="timer-bar-container">  
         <?php include '../utils/progressBarRapid.php'; ?>
@@ -149,6 +150,12 @@ $currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionI
             <?php endif; ?>
         </div>
     </div> 
+    <form id="hiddenForm" method="POST">
+    <input type="hidden" name="startTime" id="startTime" value="">
+    </form>
+    <form id="hiddenForm" method="POST">
+    <input type="hidden" name="endTime" id="endTime" value="">
+    </form>
 
     <script>
     $(document).ready(function () {

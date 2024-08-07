@@ -4,6 +4,9 @@ let currentQuestionNr = <?php echo (int)$currentQuestion; ?>;
 let timeLeft = 10;
 let timer;
 let questions = 10;
+var startTime; // Variable für die Startzeit
+var totalTime; // Variable für die gesamte Zeit
+var endTime;
 
 const timerEl = document.querySelector('.timer');
 
@@ -66,6 +69,24 @@ if (isset($_SESSION['questionIndex'])) {
 if (($_SESSION['questionIndex']) >= 10) {
     echo '<script>
         hideTimer();
+        console.log(`Das Quiz hat ${totalTime} Sekunden gedauert.`);
+
         </script>';
 } 
+
+if (($_SESSION['questionIndex']) === 0) {
+    echo '<script>
+        startTime = new Date();  /* Startzeit beim Laden der ersten Frage setzen */
+        console.log(`Startzeit: ${startTime}`);
+        </script>';
+} 
+
+if (($_SESSION['questionIndex']) === 10) {
+    echo '<script>
+        endTime = new Date();  /* Endzeit setzen */
+        totalTime = (endTime - startTime) / 1000;  /* Gesamte Zeit in Sekunden berechnen */
+         console.log(`Endzeit: ${endTime}`);
+        </script>';
+}
+
 ?>
