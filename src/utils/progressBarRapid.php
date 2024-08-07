@@ -10,7 +10,7 @@
                             <stop offset="100%" stop-color="#ffa500" />
                         </linearGradient>
                     </defs>
-                    <rect class="timer-ring__circle" x="6" y="6" width="788" height="388" rx="20" ry="20" stroke="url(#timerGradient)" stroke-width="12" fill="transparent"/>
+                    <rect class="timer-ring__circle" id= "timer-ring__circle" x="6" y="6" width="788" height="388" rx="20" ry="20" stroke="url(#timerGradient)" stroke-width="12" fill="transparent"/>
                     <rect class="progress-ring__circle" x="22" y="22" width="756" height="356" rx="16" ry="16" stroke="#00ff00" stroke-width="24" fill="transparent"/>
                 </svg>
                 <div class="timer">10</div>

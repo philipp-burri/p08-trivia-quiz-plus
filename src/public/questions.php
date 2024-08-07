@@ -7,11 +7,6 @@ if (!isset($_SESSION)) {
 
 $showCountdown = isset($_GET['start_countdown']) && $_GET['start_countdown'] == '1';
 
-if (isset($_SESSION['questionIndex'])) {
-    echo '<script type="text/javascript">
-             functionToExecute();
-          </script>';
-}
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $count_up = $_GET["count_up"];
@@ -191,7 +186,10 @@ $currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionI
 
 
     </script>
-    <?php include '../utils/progressBarStandJS.php'; ?>
-    <?php include '../utils/progressBarRapidJS.php'; ?>
+   <!--  <?php include '../utils/progressBarStandJS.php'; ?> -->
+    <?php include '../utils/progressBarRapidJS.php';
+
+    ?>
+
 </body>
 </html>
