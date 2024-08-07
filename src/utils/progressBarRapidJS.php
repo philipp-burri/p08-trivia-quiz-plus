@@ -54,6 +54,16 @@ function hideTimer() {
             element.classList.add('hidden');
         }
 
+    
+
+function safeStartTime() {
+    var hiddenInput = document.getElementById("startTime");
+    startTime = new Date();
+    hiddenInput.value = startTime;
+    var form = document.getElementById("hiddenFormStart");
+    form.submit();
+    }
+
 </script>
 
 <?php
@@ -74,10 +84,11 @@ if (($_SESSION['questionIndex']) >= 10) {
         </script>';
 } 
 
-if (($_SESSION['questionIndex']) === 0) {
+if (!isset($_SESSION['startTimeLogged']) && isset($_SESSION['questionIndex']) && $_SESSION['questionIndex'] === 0) {
+    $_SESSION['startTimeLogged'] = true;
     echo '<script>
-        startTime = new Date();  /* Startzeit beim Laden der ersten Frage setzen */
         console.log(`Startzeit: ${startTime}`);
+        safeStartTime();
         </script>';
 } 
 

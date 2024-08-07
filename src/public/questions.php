@@ -63,6 +63,13 @@ if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_
             }
             $_SESSION['questionIndex']++;
         }
+
+    if (isset($_POST['startTime'])) {
+        $startTime = $_POST['startTime'];
+        $_SESSION['startTime'] = $startTime;
+        unset($_POST['startTime']);
+        
+        }
     }
 
     // Überprüft ob Quiz beendet ist
@@ -101,7 +108,7 @@ $currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionI
 <body>
     <?php include '../utils/header.php'; ?>
     <!-- <?php include '../utils/progressBarStand.php'; ?> -->
-     <?php prettyPrint($_SESSION['questionIndex']) ?>
+     <?php prettyPrint($_SESSION['startTime']) ?>
     <div id="countdown-container"></div>
     <div class="timer-bar-container">  
         <?php include '../utils/progressBarRapid.php'; ?>
@@ -150,10 +157,10 @@ $currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionI
             <?php endif; ?>
         </div>
     </div> 
-    <form id="hiddenForm" method="POST">
+    <form id="hiddenFormStart" method="POST">
     <input type="hidden" name="startTime" id="startTime" value="">
     </form>
-    <form id="hiddenForm" method="POST">
+    <form id="hiddenFormEnd" method="POST">
     <input type="hidden" name="endTime" id="endTime" value="">
     </form>
 
