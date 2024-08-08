@@ -108,8 +108,8 @@ function rankedAdvanced($dbConnection, $name, $points, $time, $animals, $geograp
                 $stmtDelete->execute();
 
                
-                $sqlInsert = "INSERT INTO ranking_advanced (name, points, time, animals, geography, history, beginner, advanced) 
-                              VALUES (:name, :points, :time, :ani, :geo, :his, :beg, :adv)";
+                $sqlInsert = "INSERT INTO ranking_advanced (name, points, time, animals, geography, history, football, beginner, advanced) 
+                              VALUES (:name, :points, :time, :ani, :geo, :his, :foot, :beg, :adv)";
 
                 $stmtInsert = $dbConnection->prepare($sqlInsert);
 
@@ -119,6 +119,7 @@ function rankedAdvanced($dbConnection, $name, $points, $time, $animals, $geograp
                 $stmtInsert->bindParam(':ani', $animals, PDO::PARAM_INT);
                 $stmtInsert->bindParam(':geo', $geography, PDO::PARAM_INT);
                 $stmtInsert->bindParam(':his', $history, PDO::PARAM_INT);
+                $stmtInsert->bindParam(':foot', $football, PDO::PARAM_INT);
                 $stmtInsert->bindParam(':beg', $beginner, PDO::PARAM_INT);
                 $stmtInsert->bindParam(':adv', $advanced, PDO::PARAM_INT);
 
@@ -126,21 +127,22 @@ function rankedAdvanced($dbConnection, $name, $points, $time, $animals, $geograp
             }
         } else {
             
-            $sqlInsert = "INSERT INTO ranking_advanced (name, points, time, animals, geography, history, beginner, advanced) 
-                          VALUES (:name, :points, :time, :ani, :geo, :his, :beg, :adv)";
+            $sqlInsert = "INSERT INTO ranking_advanced (name, points, time, animals, geography, history, football, beginner, advanced) 
+            VALUES (:name, :points, :time, :ani, :geo, :his, :foot, :beg, :adv)";
 
-            $stmtInsert = $dbConnection->prepare($sqlInsert);
+                $stmtInsert = $dbConnection->prepare($sqlInsert);
 
-            $stmtInsert->bindParam(':name', $name, PDO::PARAM_STR);
-            $stmtInsert->bindParam(':points', $points, PDO::PARAM_INT);
-            $stmtInsert->bindParam(':time', $time, PDO::PARAM_INT);
-            $stmtInsert->bindParam(':ani', $animals, PDO::PARAM_INT);
-            $stmtInsert->bindParam(':geo', $geography, PDO::PARAM_INT);
-            $stmtInsert->bindParam(':his', $history, PDO::PARAM_INT);
-            $stmtInsert->bindParam(':beg', $beginner, PDO::PARAM_INT);
-            $stmtInsert->bindParam(':adv', $advanced, PDO::PARAM_INT);
+                $stmtInsert->bindParam(':name', $name, PDO::PARAM_STR);
+                $stmtInsert->bindParam(':points', $points, PDO::PARAM_INT);
+                $stmtInsert->bindParam(':time', $time, PDO::PARAM_INT);
+                $stmtInsert->bindParam(':ani', $animals, PDO::PARAM_INT);
+                $stmtInsert->bindParam(':geo', $geography, PDO::PARAM_INT);
+                $stmtInsert->bindParam(':his', $history, PDO::PARAM_INT);
+                $stmtInsert->bindParam(':foot', $football, PDO::PARAM_INT);
+                $stmtInsert->bindParam(':beg', $beginner, PDO::PARAM_INT);
+                $stmtInsert->bindParam(':adv', $advanced, PDO::PARAM_INT);
 
-            $stmtInsert->execute();
+                $stmtInsert->execute();
         }
     }
     
@@ -168,23 +170,4 @@ function displayRankedAndvanced($dbConnection){
     }
 
     return $displayRankedAdvanced;
-}
-
-function setCategory(&$animals, &$geography, &$history, $category){
-    if ($category === 'animals') {
-        $animals = 1;
-    } elseif ($category === 'geography') {
-        $geography = 1;
-    } elseif ($category === 'history') {
-        $history = 1;
-    }
-}
-
-function setLevel(&$beginner, &$advanced, $level){
-    if ($level === 'beginner') {
-        $beginner = 1;
-    } elseif ($level === 'advanced') {
-        $advanced = 1;
-    }
-    header('Location: /rankeddisplay.php');
 }
