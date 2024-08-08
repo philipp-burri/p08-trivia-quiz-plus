@@ -108,10 +108,10 @@ $currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionI
 </head>
 <body>
     <?php include '../utils/header.php'; ?>
-    <?php include '../utils/progressBarStand.php'; ?>
+    <!-- <?php include '../utils/progressBarStand.php'; ?> -->
     <div id="countdown-container"></div>
     <div class="timer-bar-container">  
-        <!-- <?php include '../utils/progressBarRapid.php'; ?> -->
+        <?php include '../utils/progressBarRapid.php'; ?>
         <div id="quiz-content" class="quiz-container fadeInElement">
             <?php if ($quizFinished): ?>
                 <div class="question">
@@ -235,8 +235,8 @@ $currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionI
     }
     
     ?>
-    <?php include '../utils/progressBarStandJS.php'; ?>
-   <!--  <?php include '../utils/progressBarRapidJS.php';?> -->
+    <!-- <?php include '../utils/progressBarStandJS.php'; ?> -->
+    <?php include '../utils/progressBarRapidJS.php';?>
 
 </body>
 </html>

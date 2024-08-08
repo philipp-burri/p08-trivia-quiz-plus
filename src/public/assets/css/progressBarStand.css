@@ -1,5 +1,5 @@
 .progress-container {
-    width: 90%;
+    width: 60%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -19,8 +19,8 @@
 }
 
 .step {
-    width: 30px;
-    height: 30px;
+    width: 22px;
+    height: 22px;
     background-color: #ccc;
     border-radius: 50%;
     z-index: 10;
@@ -33,7 +33,7 @@
 
 .bar {
     flex-grow: 1;
-    height:12px;
+    height:10px;
     background-color: #ccc;
     position: relative;
 }
