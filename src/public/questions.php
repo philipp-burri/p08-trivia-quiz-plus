@@ -108,12 +108,7 @@ $currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionI
 </head>
 <body>
     <?php include '../utils/header.php'; ?>
-<<<<<<< HEAD
     <?php include '../utils/progressBarStand.php'; ?>
-=======
-    <!-- TODO: Flexible Auswahl für spielmodis -->
-    <!-- <?php include '../utils/progressBarStand.php'; ?> -->
->>>>>>> d081f81c52114bb5c9ca9d0e226d5153896646e3
     <div id="countdown-container"></div>
     <div class="timer-bar-container">  
         <!-- <?php include '../utils/progressBarRapid.php'; ?> -->
