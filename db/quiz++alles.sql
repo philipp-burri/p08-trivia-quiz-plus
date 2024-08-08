@@ -547,8 +547,17 @@ CREATE TABLE `questions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `questions`
---
+-- Dumping data for table `questions`CREATE TABLE `ranking_advanced` (
+  `id` int NOT NULL,
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `points` int NOT NULL,
+  `time` int NOT NULL,
+  `animals` tinyint(1) NOT NULL,
+  `geography` tinyint(1) NOT NULL,
+  `history` tinyint(1) NOT NULL,
+  `beginner` tinyint(1) NOT NULL,
+  `advanced` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `questions` (`id`, `question`, `type`, `level`, `is_multi`) VALUES
 (1, 'Welche der folgenden Länder haben Küsten an der Ostsee?', 'geography', 1, 1),
@@ -746,6 +755,7 @@ CREATE TABLE `ranking_advanced` (
   `animals` tinyint(1) NOT NULL,
   `geography` tinyint(1) NOT NULL,
   `history` tinyint(1) NOT NULL,
+  `football` tinyint(1) NOT NULL,
   `beginner` tinyint(1) NOT NULL,
   `advanced` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
