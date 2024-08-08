@@ -15,8 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-
-
 // Lesen Sie die ausgewählte Kategorie aus
 $category = isset($_POST['category']) ? $_POST['category'] : (isset($_SESSION['category']) ? $_SESSION['category'] : '');
 $amount = 10; // Gesamtanzahl der Fragen für das Quiz
@@ -32,7 +30,6 @@ if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_
     $_SESSION['mode'] = $mode;
     $_SESSION['totalQuestions'] = count($_SESSION['questionIds']);
 }
-
     // überprüft ob eine antwort gesendet wurde, 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
@@ -111,10 +108,10 @@ $currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionI
 </head>
 <body>
     <?php include '../utils/header.php'; ?>
-    <!-- <?php include '../utils/progressBarStand.php'; ?> -->
+    <?php include '../utils/progressBarStand.php'; ?>
     <div id="countdown-container"></div>
     <div class="timer-bar-container">  
-        <?php include '../utils/progressBarRapid.php'; ?>
+        <!-- <?php include '../utils/progressBarRapid.php'; ?> -->
         <div id="quiz-content" class="quiz-container fadeInElement">
             <?php if ($quizFinished): ?>
                 <div class="question">
@@ -238,10 +235,8 @@ $currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionI
     }
     
     ?>
-   <!--  <?php include '../utils/progressBarStandJS.php'; ?> -->
-    <?php include '../utils/progressBarRapidJS.php';
-
-    ?>
+    <?php include '../utils/progressBarStandJS.php'; ?>
+   <!--  <?php include '../utils/progressBarRapidJS.php';?> -->
 
 </body>
 </html>

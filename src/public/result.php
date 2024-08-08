@@ -49,6 +49,7 @@ function formatTime($quizTimeInMil) {
     <title>Document</title>
 </head>
 <body>
+<?php include '../utils/header.php'; ?>
 <form action="assets/scripts.php" method="POST">
     <input type="hidden" name="send_ranking_simple" value="1">
     <button type="submit">simple</button>
