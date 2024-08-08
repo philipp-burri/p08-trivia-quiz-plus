@@ -1,16 +1,14 @@
 .timer-bar-container {
+    position: relative;
+    width: 800px;
+    height: 500px;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 90vmin;
-    height: 45vmin;
-    max-width: 800px;
-    max-height: 400px;
-    position: relative; /* Hinzugefügt für absolute Positionierung */
 }
 
 .timer-container {
-    position: absolute; /* Absolute Positionierung innerhalb des Containers */
+    position: absolute;
     width: 100%;
     height: 100%;
     display: flex;
@@ -23,34 +21,18 @@
     height: 100%;
 }
 
+.timer-ring__circle {
+    transition: 0.35s stroke-dashoffset;
+    transform-origin: center;
+    stroke-dasharray: 2584; /* (796 + 796 + 496 + 496) */
+    stroke-dashoffset: 0;
+    filter: drop-shadow(0 0 1px rgba(255, 215, 0, 0.7));
+}
+
 .timer {
     position: absolute;
     top: 20px;
     font-size: 2.5vmin;
     color: white;
-    display: none; /*  Timer ausgeblendet */
-}
-
-.timer-ring__circle, .progress-ring__circle {
-    transition: 0.35s stroke-dashoffset;
-    transform-origin: center;
-}
-
-.timer-ring__circle {
-    stroke-dasharray: 1560;
-    stroke-dashoffset: 0;
-    /* stroke: url(#timerGradient); */
-    stroke-width: 12; /* Breiter für bessere Sichtbarkeit */
-    stroke: #ffd700; /* Goldgelb als Kontrastfarbe zu Violett */
-}
-
-.progress-ring__circle {
-    stroke-dasharray: 1496;
-    stroke-dashoffset: 1496;
-    stroke: #00ff00; /* Hellgrün als weitere Kontrastfarbe */
-    stroke-width: 24; /* Breiter für bessere Sichtbarkeit */
-}
-
-.hidden{
     display: none;
 }
