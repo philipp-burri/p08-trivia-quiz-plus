@@ -19,19 +19,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['category']) && isset(
 }
 
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_ranking_simple'])) {
+/* if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_ranking_simple'])) {
     rankedSimple($dbConnection, $name, $points, $time);
-}
+} */
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_ranking_advanced'])) {
     echo '<pre>';
     print_r($_POST);
     echo '</pre>';
-    rankedAdvanced($dbConnection, $name, $points, $time, $animals, $geography, $history, $beginner, $advanced);
-}
-
-function prettyPrint($a){
-    echo '<pre>';
-    print_r($a);
-    echo '</pre>';
+    rankedAdvanced($dbConnection, $name, $points, $time, $animals, $geography, $history, $football, $beginner, $advanced);
 }

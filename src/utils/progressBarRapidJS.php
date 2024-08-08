@@ -56,13 +56,6 @@ function hideTimer() {
 
     
 
-function safeStartTime() {
-    var hiddenInput = document.getElementById("startTime");
-    startTime = new Date();
-    hiddenInput.value = startTime;
-    var form = document.getElementById("hiddenFormStart");
-    form.submit();
-    }
 
 </script>
 
@@ -83,21 +76,5 @@ if (($_SESSION['questionIndex']) >= 10) {
 
         </script>';
 } 
-
-if (!isset($_SESSION['startTimeLogged']) && isset($_SESSION['questionIndex']) && $_SESSION['questionIndex'] === 0) {
-    $_SESSION['startTimeLogged'] = true;
-    echo '<script>
-        console.log(`Startzeit: ${startTime}`);
-        safeStartTime();
-        </script>';
-} 
-
-if (($_SESSION['questionIndex']) === 10) {
-    echo '<script>
-        endTime = new Date();  /* Endzeit setzen */
-        totalTime = (endTime - startTime) / 1000;  /* Gesamte Zeit in Sekunden berechnen */
-         console.log(`Endzeit: ${endTime}`);
-        </script>';
-}
 
 ?>

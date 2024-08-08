@@ -15,6 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
+
+
 // Lesen Sie die ausgewählte Kategorie aus
 $category = isset($_POST['category']) ? $_POST['category'] : (isset($_SESSION['category']) ? $_SESSION['category'] : '');
 $amount = 10; // Gesamtanzahl der Fragen für das Quiz
@@ -72,6 +74,7 @@ if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_
         }
     }
 
+
     // Überprüft ob Quiz beendet ist
     if ($_SESSION['questionIndex'] >= $_SESSION['totalQuestions']) {
     $quizFinished = true;
@@ -91,6 +94,7 @@ if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_
     shuffle($answers);
 }
 $currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionIndex'] : 0;
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -108,7 +112,6 @@ $currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionI
 <body>
     <?php include '../utils/header.php'; ?>
     <!-- <?php include '../utils/progressBarStand.php'; ?> -->
-     <?php prettyPrint($_SESSION['startTime']) ?>
     <div id="countdown-container"></div>
     <div class="timer-bar-container">  
         <?php include '../utils/progressBarRapid.php'; ?>
@@ -160,9 +163,9 @@ $currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionI
     <form id="hiddenFormStart" method="POST">
     <input type="hidden" name="startTime" id="startTime" value="">
     </form>
-    <form id="hiddenFormEnd" method="POST">
+    <form id="hiddenFormEnd" method="POST" action="result.php">
     <input type="hidden" name="endTime" id="endTime" value="">
-    </form>
+</form>
 
     <script>
     $(document).ready(function () {
@@ -198,8 +201,43 @@ $currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionI
         }
     });
 
+    function safeStartTime() {
+    var hiddenInput = document.getElementById("startTime");
+    var time = new Date();
+    var startTime= time.toISOString();
+    hiddenInput.value = startTime;
+    var form = document.getElementById("hiddenFormStart");
+    form.submit();
+    }
+
+    function safeEndTime() {
+    var hiddenInput = document.getElementById("endTime");
+    var time = new Date();
+    var endTime= time.toISOString();
+    hiddenInput.value = endTime;
+    var form = document.getElementById("hiddenFormEnd");
+    form.submit();
+    }
+
 
     </script>
+    <?php
+    
+    if (!isset($_SESSION['startTimeLogged']) && isset($_SESSION['questionIndex']) && $_SESSION['questionIndex'] === 0) {
+        $_SESSION['startTimeLogged'] = true;
+        echo   '<script>
+                safeStartTime();
+                </script>';
+    } 
+    
+    if (!isset($_SESSION['endTimeLogged']) && isset($_SESSION['questionIndex']) && $_SESSION['questionIndex'] === 10) {
+        $_SESSION['endTimeLogged'] = true;
+        echo   '<script>
+                safeEndTime()
+                </script>';
+    }
+    
+    ?>
    <!--  <?php include '../utils/progressBarStandJS.php'; ?> -->
     <?php include '../utils/progressBarRapidJS.php';
 
