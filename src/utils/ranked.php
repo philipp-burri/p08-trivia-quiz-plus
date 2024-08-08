@@ -4,15 +4,16 @@ if (!isset($_SESSION)) {
 }
 
 $name = $_POST['name'] ?? 'Test';
-$points = $_POST['points'] ?? 250;
-$time = $_POST['time'] ?? 130;
-$animals = isset($_POST['animals']) ? (int) $_POST['animals'] : 0;
-$geography = isset($_POST['geography']) ? (int) $_POST['geography'] : 0;
-$history = isset($_POST['history']) ? (int) $_POST['history'] : 1;
+$points = $_POST['points'] ?? 300;
+$time = $_SESSION['quiztime'] ?? 125;
+$animals = (isset($_SESSION['category']) && $_SESSION['category'] === 'animals') ? 1 : 0;
+$geography = (isset($_SESSION['category']) && $_SESSION['category'] === 'geography') ? 1 : 0;
+$history = (isset($_SESSION['category']) && $_SESSION['category'] === 'history') ? 1 : 0;
+$football = (isset($_SESSION['category']) && $_SESSION['category'] === 'football') ? 1 : 0;
 $beginner = isset($_POST['beginner']) ? (int) $_POST['beginner'] : 0;
 $advanced = isset($_POST['advanced']) ? (int) $_POST['advanced'] : 1;
 
-function rankedSimple($dbConnection, $name, $points, $time) {
+/* function rankedSimple($dbConnection, $name, $points, $time) {
     try {
         $sqlCount = "SELECT COUNT(*) FROM ranking_simple";
         $stmtCount = $dbConnection->query($sqlCount);
@@ -64,13 +65,13 @@ function rankedSimple($dbConnection, $name, $points, $time) {
     }
 
     header('Location: /result.php');
-}
+} */
 
-function rankedAdvanced($dbConnection, $name, $points, $time, $animals, $geography, $history, $beginner, $advanced) {
+function rankedAdvanced($dbConnection, $name, $points, $time, $animals, $geography, $history, $football, $beginner, $advanced) {
 
 
    
-    $category = $animals ? 'animals' : ($geography ? 'geography' : ($history ? 'history' : ''));
+    $category = $animals ? 'animals' : ($geography ? 'geography' : ($history ? 'history' : ($football ? 'football' : '')));
     $difficulty = $beginner ? 'beginner' : ($advanced ? 'advanced' : '');
 
     if ($category && $difficulty) {

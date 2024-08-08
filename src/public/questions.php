@@ -7,6 +7,16 @@ if (!isset($_SESSION)) {
 
 $showCountdown = isset($_GET['start_countdown']) && $_GET['start_countdown'] == '1';
 
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $count_up = $_GET["count_up"];
+    if ($count_up == 1) {
+        $_SESSION['questionIndex']++;
+    }
+}
+
+
+
 // Lesen Sie die ausgewählte Kategorie aus
 $category = isset($_POST['category']) ? $_POST['category'] : (isset($_SESSION['category']) ? $_SESSION['category'] : '');
 $amount = 10; // Gesamtanzahl der Fragen für das Quiz
@@ -55,7 +65,15 @@ if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_
             }
             $_SESSION['questionIndex']++;
         }
+
+    if (isset($_POST['startTime'])) {
+        $startTime = $_POST['startTime'];
+        $_SESSION['startTime'] = $startTime;
+        unset($_POST['startTime']);
+        
+        }
     }
+
 
     // Überprüft ob Quiz beendet ist
     if ($_SESSION['questionIndex'] >= $_SESSION['totalQuestions']) {
@@ -75,6 +93,8 @@ if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_
     // Mischen Sie die Antworten
     shuffle($answers);
 }
+$currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionIndex'] : 0;
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -83,57 +103,69 @@ if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/header.css">
     <link rel="stylesheet" href="assets/css/questions.css">
+    <link rel="stylesheet" href="assets/css/progressBarStand.css">
+    <link rel="stylesheet" href="assets/css/progressBarRapid.css">
     <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <?php include '../utils/header.php'; ?>
+    <!-- <?php include '../utils/progressBarStand.php'; ?> -->
     <div id="countdown-container"></div>
-<div id="quiz-content" class="quiz-container">
-    <?php if ($quizFinished): ?>
-        <div class="question">
-            Quiz beendet! Ihr Ergebnis: <?php echo $score; ?> von <?php echo $totalQuestions; ?>
+    <div class="timer-bar-container">  
+        <?php include '../utils/progressBarRapid.php'; ?>
+        <div id="quiz-content" class="quiz-container fadeInElement">
+            <?php if ($quizFinished): ?>
+                <div class="question">
+                    Quiz beendet! Ihr Ergebnis: <?php echo $score; ?> von <?php echo $totalQuestions; ?>
+                </div>
+            <?php else: ?>
+                <div class="progress">
+                    Frage <?php echo $_SESSION['questionIndex'] + 1; ?> von <?php echo $_SESSION['totalQuestions']; ?>
+                </div>
+                <div class="question">
+                    <?php echo htmlspecialchars($question); ?>
+                </div>
+                <form method="POST" action="">
+                    <div class="answers">
+                        <?php foreach ($answers as $answer): ?>
+                            <?php if ($isMulti): ?>
+                                <div class="answer-btn multi-choice">
+                                    <input type="checkbox" 
+                                        id="answer_<?php echo $answer['id']; ?>" 
+                                        name="answers[]" 
+                                        value="<?php echo $answer['id']; ?>">
+                                    <label for="answer_<?php echo $answer['id']; ?>">
+                                        <?php echo htmlspecialchars($answer['answer']); ?>
+                                    </label>
+                                </div>
+                            <?php else: ?>
+                                <button type="submit" 
+                                        name="answer" 
+                                        value="<?php echo $answer['id']; ?>" 
+                                        class="answer-btn">
+                                    <?php echo htmlspecialchars($answer['answer']); ?>
+                                </button>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                        
+                        <?php if ($isMulti): ?>
+                            <button type="submit" name="submit_multi" class="submit-btn-q">
+                                Antworten einreichen
+                            </button>
+                        <?php endif; ?>
+                    </div>
+                </form>
+            <?php endif; ?>
         </div>
-    <?php else: ?>
-        <div class="progress">
-            Frage <?php echo $_SESSION['questionIndex'] + 1; ?> von <?php echo $_SESSION['totalQuestions']; ?>
-        </div>
-        <div class="question">
-            <?php echo htmlspecialchars($question); ?>
-        </div>
-        <form method="POST" action="">
-            <div class="answers">
-                <?php foreach ($answers as $answer): ?>
-                    <?php if ($isMulti): ?>
-                        <div class="answer-btn multi-choice">
-                            <input type="checkbox" 
-                                   id="answer_<?php echo $answer['id']; ?>" 
-                                   name="answers[]" 
-                                   value="<?php echo $answer['id']; ?>">
-                            <label for="answer_<?php echo $answer['id']; ?>">
-                                <?php echo htmlspecialchars($answer['answer']); ?>
-                            </label>
-                        </div>
-                    <?php else: ?>
-                        <button type="submit" 
-                                name="answer" 
-                                value="<?php echo $answer['id']; ?>" 
-                                class="answer-btn">
-                            <?php echo htmlspecialchars($answer['answer']); ?>
-                        </button>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-                
-                <?php if ($isMulti): ?>
-                    <button type="submit" name="submit_multi" class="submit-btn-q">
-                        Antworten einreichen
-                    </button>
-                <?php endif; ?>
-            </div>
-        </form>
-    <?php endif; ?>
-</div>
+    </div> 
+    <form id="hiddenFormStart" method="POST">
+    <input type="hidden" name="startTime" id="startTime" value="">
+    </form>
+    <form id="hiddenFormEnd" method="POST" action="result.php">
+    <input type="hidden" name="endTime" id="endTime" value="">
+</form>
 
     <script>
     $(document).ready(function () {
@@ -168,6 +200,48 @@ if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_
             $('#quiz-content').show();
         }
     });
+
+    function safeStartTime() {
+    var hiddenInput = document.getElementById("startTime");
+    var time = new Date();
+    var startTime= time.toISOString();
+    hiddenInput.value = startTime;
+    var form = document.getElementById("hiddenFormStart");
+    form.submit();
+    }
+
+    function safeEndTime() {
+    var hiddenInput = document.getElementById("endTime");
+    var time = new Date();
+    var endTime= time.toISOString();
+    hiddenInput.value = endTime;
+    var form = document.getElementById("hiddenFormEnd");
+    form.submit();
+    }
+
+
     </script>
+    <?php
+    
+    if (!isset($_SESSION['startTimeLogged']) && isset($_SESSION['questionIndex']) && $_SESSION['questionIndex'] === 0) {
+        $_SESSION['startTimeLogged'] = true;
+        echo   '<script>
+                safeStartTime();
+                </script>';
+    } 
+    
+    if (!isset($_SESSION['endTimeLogged']) && isset($_SESSION['questionIndex']) && $_SESSION['questionIndex'] === 10) {
+        $_SESSION['endTimeLogged'] = true;
+        echo   '<script>
+                safeEndTime()
+                </script>';
+    }
+    
+    ?>
+   <!--  <?php include '../utils/progressBarStandJS.php'; ?> -->
+    <?php include '../utils/progressBarRapidJS.php';
+
+    ?>
+
 </body>
 </html>
