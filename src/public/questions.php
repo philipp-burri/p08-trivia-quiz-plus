@@ -100,6 +100,8 @@ $currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionI
 <body>
     <?php include '../utils/header.php'; ?>
     <div id="countdown-container"></div>
+    <div class="quiz-page">
+    <?php include '../utils/progressBarStand.php';?>
     <div class="timer-bar-container">  
     <?php include '../utils/progressBarRapid.php';?>
 
@@ -139,6 +141,7 @@ $currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionI
             <?php endif; ?>
         </div>
     </div>
+    
     <?php if ($isMulti && !$quizFinished): ?>
         <form method="POST" action="">
             <button type="submit" name="submit_multi" class="submit-btn-q">
@@ -152,7 +155,7 @@ $currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionI
     <form id="hiddenFormEnd" method="POST" action="result.php">
         <input type="hidden" name="endTime" id="endTime" value="">
     </form>
-
+</div>
     <script>
     $(document).ready(function () {
         var showCountdown = <?php echo json_encode($showCountdown); ?>;

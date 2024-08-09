@@ -9,6 +9,10 @@
     to {opacity: 1;}
 }
 
+#quiz-page{
+    margin-top: 100px;
+}
+
 #countdown {
     position: fixed;
     top: 50%;
@@ -155,7 +159,7 @@ body, html {
 
 .submit-btn-q {
     display: block;
-    width: 50%;
+    width: 100%;
     margin: 20px auto 0;
     border: 3px solid white;
     background-color: rgb(255, 255, 255);
