@@ -521,22 +521,14 @@ INSERT INTO `answers` (`id`, `answer`, `is_correct`, `question_id`) VALUES
 (484, 'Manuel Akanji', 0, 120);
 
 
--- --------------------------------------------------------
 
---
--- Table structure for table `name_suffix`
---
 
 CREATE TABLE `name_suffix` (
   `base_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `suffix` int DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `questions`
---
 
 CREATE TABLE `questions` (
   `id` int NOT NULL,
@@ -546,8 +538,8 @@ CREATE TABLE `questions` (
   `is_multi` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `questions`CREATE TABLE `ranking_advanced` (
+
+  CREATE TABLE `ranking_advanced` (
   `id` int NOT NULL,
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `points` int NOT NULL,
@@ -555,6 +547,7 @@ CREATE TABLE `questions` (
   `animals` tinyint(1) NOT NULL,
   `geography` tinyint(1) NOT NULL,
   `history` tinyint(1) NOT NULL,
+  `football` tinyint(1) NOT NULL,
   `beginner` tinyint(1) NOT NULL,
   `advanced` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -741,26 +734,12 @@ INSERT INTO `questions` (`id`, `question`, `type`, `level`, `is_multi`) VALUES
 (239, 'Welche dieser Spieler haben in der Premier League den Titel des Torschützenkönigs gewonnen?', 'football', 2, 1),
 (240, 'Welche dieser Städte haben ein Fußballstadion mit mehr als 80.000 Sitzplätzen?', 'football', 2, 1);
 
--- --------------------------------------------------------
+
 
 --
 -- Table structure for table `ranking_advanced`
 --
 
-CREATE TABLE `ranking_advanced` (
-  `id` int NOT NULL,
-  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `points` int NOT NULL,
-  `time` int NOT NULL,
-  `animals` tinyint(1) NOT NULL,
-  `geography` tinyint(1) NOT NULL,
-  `history` tinyint(1) NOT NULL,
-  `football` tinyint(1) NOT NULL,
-  `beginner` tinyint(1) NOT NULL,
-  `advanced` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
 -- Triggers `ranking_advanced`
 --
 DELIMITER $$
