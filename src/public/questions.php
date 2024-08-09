@@ -7,80 +7,63 @@ if (!isset($_SESSION)) {
 
 $showCountdown = isset($_GET['start_countdown']) && $_GET['start_countdown'] == '1';
 
-$category = isset($_POST['category']) ? $_POST['category'] : (isset($_SESSION['category']) ? $_SESSION['category'] : '');
-$isEliminationMode = isset($_SESSION['mode']) && $_SESSION['mode'] === 'elimination';
+$category = $_POST['category'] ?? $_SESSION['category'] ?? '';
+$mode = $_POST['mode'] ?? $_SESSION['mode'] ?? 'standard';
+$isEliminationMode = $mode === 'elimination';
 
 // Initialisierung der Quiz-Daten
 if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_SESSION['category'] !== $category) {
-    $mode = isset($_POST['mode']) ? $_POST['mode'] : 'standard';
-    
     $questionData = questionIdandIndex($category, $dbConnection, $mode);
     $_SESSION['questionIds'] = $questionData['questionIds'];
-    $_SESSION['questionIndex'] = 0; // Sicherstellen, dass wir bei 0 beginnen
+    $_SESSION['questionIndex'] = 0;
     $_SESSION['score'] = 0;
     $_SESSION['category'] = $category;
     $_SESSION['mode'] = $mode;
     $_SESSION['totalQuestions'] = count($_SESSION['questionIds']);
     $quizFinished = false;
-} else {
-    // Verarbeitung der Antwort, nur wenn es nicht die erste Frage ist
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['answer']) || isset($_POST['answers']))) {
-        $currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
-        $questionData = singlequestionID($currentQuestionId, $dbConnection);
-        $isMulti = $questionData['is_multi'];
-        $isCorrect = false;
-    
-        if ($isMulti) {
-            // Verarbeitung von Multiple-Choice-Fragen
-            if (isset($_POST['answers'])) {
-                $selectedAnswerIds = $_POST['answers'];
-                $correctAnswerIds = array_column(array_filter($questionData['answers'], function($a) { return $a['is_correct'] == 1; }), 'id');
-                
-                // Überprüfen, ob die ausgewählten Antworten genau den korrekten Antworten entsprechen
-                $isCorrect = count($selectedAnswerIds) == count($correctAnswerIds) && 
-                             count(array_diff($selectedAnswerIds, $correctAnswerIds)) == 0;
-                
-                if ($isCorrect) {
-                    $_SESSION['score']++;
-                }
-            }
-            // Bei Multiple-Choice immer zur nächsten Frage gehen, unabhängig von der Korrektheit
-            $_SESSION['questionIndex']++;
-        } else {
-            // Verarbeitung von Single-Choice-Fragen (bleibt unverändert)
-            if (isset($_POST['answer'])) {
-                $selectedAnswerId = $_POST['answer'];
-                $checkAnswerQuery = "SELECT is_correct FROM answers WHERE id = :answerId AND question_id = :questionId";
-                $stmt = $dbConnection->prepare($checkAnswerQuery);
-                $stmt->execute([':answerId' => $selectedAnswerId, ':questionId' => $currentQuestionId]);
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-                $isCorrect = $result && $result['is_correct'] == 1;
-                if ($isCorrect) {
-                    $_SESSION['score']++;
-                }
-            }
-    
-            if ($isEliminationMode) {
-                if (!$isCorrect) {
-                    $quizFinished = true;
-                } else {
-                    $_SESSION['questionIndex']++;
-                }
-            } else {
-                $_SESSION['questionIndex']++;
-            }
+}
+
+$quizFinished = false;
+
+// Verarbeitung der Antwort
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['answer']) || isset($_POST['answers']))) {
+    $currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
+    $questionData = singlequestionID($currentQuestionId, $dbConnection);
+    $isMulti = $questionData['is_multi'];
+    $isCorrect = false;
+
+    if ($isMulti) {
+        if (isset($_POST['answers'])) {
+            $selectedAnswerIds = $_POST['answers'];
+            $correctAnswerIds = array_column(array_filter($questionData['answers'], function($a) { return $a['is_correct'] == 1; }), 'id');
+            $isCorrect = count($selectedAnswerIds) == count($correctAnswerIds) && 
+                         count(array_diff($selectedAnswerIds, $correctAnswerIds)) == 0;
         }
+    } else {
+        if (isset($_POST['answer'])) {
+            $selectedAnswerId = $_POST['answer'];
+            $correctAnswerId = array_column(array_filter($questionData['answers'], function($a) { return $a['is_correct'] == 1; }), 'id')[0];
+            $isCorrect = $selectedAnswerId == $correctAnswerId;
+        }
+    }
+
+    if ($isCorrect) {
+        $_SESSION['score']++;
+    }
+
+    if ($isEliminationMode && !$isCorrect) {
+        $quizFinished = true;
+    } else {
+        $_SESSION['questionIndex']++;
     }
 }
 
 if (isset($_POST['startTime'])) {
-    $startTime = $_POST['startTime'];
-    $_SESSION['startTime'] = $startTime;
+    $_SESSION['startTime'] = $_POST['startTime'];
     unset($_POST['startTime']);
 }
 
-$quizFinished = $quizFinished ?? ($_SESSION['questionIndex'] >= $_SESSION['totalQuestions']);
+$quizFinished = $quizFinished || ($_SESSION['questionIndex'] >= $_SESSION['totalQuestions']);
 if ($quizFinished) {
     $score = $_SESSION['score'];
     $totalQuestions = $_SESSION['totalQuestions'];
@@ -92,7 +75,7 @@ if ($quizFinished) {
     $isMulti = $questionData['is_multi'];
     shuffle($answers);
 }
-$currentQuestion = $_SESSION['questionIndex'];
+$currentQuestion = $_SESSION['questionIndex'] + 1;
 ?>
 
 <!DOCTYPE html>
@@ -125,41 +108,43 @@ $currentQuestion = $_SESSION['questionIndex'];
                 <div class="question">
                     <?php echo htmlspecialchars($question); ?>
                 </div>
-                <form method="POST" action="">
-                    <div class="answers">
-                        <?php foreach ($answers as $answer): ?>
-                            <?php if ($isMulti): ?>
+                <?php if ($isMulti): ?>
+                    <form method="POST" action="">
+                        <div class="answers">
+                            <?php foreach ($answers as $answer): ?>
                                 <div class="answer-btn multi-choice">
                                     <input type="checkbox" 
-                                        id="answer_<?php echo $answer['id']; ?>" 
-                                        name="answers[]" 
-                                        value="<?php echo $answer['id']; ?>">
+                                           id="answer_<?php echo $answer['id']; ?>" 
+                                           name="answers[]" 
+                                           value="<?php echo $answer['id']; ?>">
                                     <label for="answer_<?php echo $answer['id']; ?>">
                                         <?php echo htmlspecialchars($answer['answer']); ?>
                                     </label>
                                 </div>
-                            <?php else: ?>
+                            <?php endforeach; ?>
+                        </div>
+                        <button type="submit" name="submit_multi" class="submit-btn-q">
+                            Antworten einreichen
+                        </button>
+                    </form>
+                <?php else: ?>
+                    <form method="POST" action="">
+                        <div class="answers">
+                            <?php foreach ($answers as $answer): ?>
                                 <button type="submit" 
                                         name="answer" 
                                         value="<?php echo $answer['id']; ?>" 
                                         class="answer-btn">
                                     <?php echo htmlspecialchars($answer['answer']); ?>
                                 </button>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    </div>
-                </form>
+                            <?php endforeach; ?>
+                        </div>
+                    </form>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
     </div>
     
-    <?php if ($isMulti && !$quizFinished): ?>
-        <form method="POST" action="">
-            <button type="submit" name="submit_multi" class="submit-btn-q">
-                Antworten einreichen
-            </button>
-        </form>
-    <?php endif; ?>
     <form id="hiddenFormStart" method="POST">
         <input type="hidden" name="startTime" id="startTime" value="">
     </form>
@@ -238,7 +223,6 @@ $currentQuestion = $_SESSION['questionIndex'];
     }
     
     ?>
-    <!-- <?php include '../utils/progressBarStandJS.php'; ?> -->
     <?php include '../utils/progressBarRapidJS.php';?>
 
 </body>
