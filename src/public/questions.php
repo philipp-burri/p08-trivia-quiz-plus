@@ -7,81 +7,92 @@ if (!isset($_SESSION)) {
 
 $showCountdown = isset($_GET['start_countdown']) && $_GET['start_countdown'] == '1';
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $count_up = $_GET["count_up"];
-    if ($count_up == 1) {
-        $_SESSION['questionIndex']++;
-    }
-}
-
 $category = isset($_POST['category']) ? $_POST['category'] : (isset($_SESSION['category']) ? $_SESSION['category'] : '');
-$amount = 10;
+$isEliminationMode = isset($_SESSION['mode']) && $_SESSION['mode'] === 'elimination';
 
+// Initialisierung der Quiz-Daten
 if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_SESSION['category'] !== $category) {
     $mode = isset($_POST['mode']) ? $_POST['mode'] : 'standard';
+    
     $questionData = questionIdandIndex($category, $dbConnection, $mode);
     $_SESSION['questionIds'] = $questionData['questionIds'];
-    $_SESSION['questionIndex'] = $questionData['questionIndex'];
+    $_SESSION['questionIndex'] = 0; // Sicherstellen, dass wir bei 0 beginnen
     $_SESSION['score'] = 0;
     $_SESSION['category'] = $category;
     $_SESSION['mode'] = $mode;
     $_SESSION['totalQuestions'] = count($_SESSION['questionIds']);
+    $quizFinished = false;
+} else {
+    // Verarbeitung der Antwort, nur wenn es nicht die erste Frage ist
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['answer']) || isset($_POST['answers']))) {
+        $currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
+        $questionData = singlequestionID($currentQuestionId, $dbConnection);
+        $isMulti = $questionData['is_multi'];
+        $isCorrect = false;
+    
+        if ($isMulti) {
+            // Verarbeitung von Multiple-Choice-Fragen
+            if (isset($_POST['answers'])) {
+                $selectedAnswerIds = $_POST['answers'];
+                $correctAnswerIds = array_column(array_filter($questionData['answers'], function($a) { return $a['is_correct'] == 1; }), 'id');
+                
+                // Überprüfen, ob die ausgewählten Antworten genau den korrekten Antworten entsprechen
+                $isCorrect = count($selectedAnswerIds) == count($correctAnswerIds) && 
+                             count(array_diff($selectedAnswerIds, $correctAnswerIds)) == 0;
+                
+                if ($isCorrect) {
+                    $_SESSION['score']++;
+                }
+            }
+            // Bei Multiple-Choice immer zur nächsten Frage gehen, unabhängig von der Korrektheit
+            $_SESSION['questionIndex']++;
+        } else {
+            // Verarbeitung von Single-Choice-Fragen (bleibt unverändert)
+            if (isset($_POST['answer'])) {
+                $selectedAnswerId = $_POST['answer'];
+                $checkAnswerQuery = "SELECT is_correct FROM answers WHERE id = :answerId AND question_id = :questionId";
+                $stmt = $dbConnection->prepare($checkAnswerQuery);
+                $stmt->execute([':answerId' => $selectedAnswerId, ':questionId' => $currentQuestionId]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+                $isCorrect = $result && $result['is_correct'] == 1;
+                if ($isCorrect) {
+                    $_SESSION['score']++;
+                }
+            }
+    
+            if ($isEliminationMode) {
+                if (!$isCorrect) {
+                    $quizFinished = true;
+                } else {
+                    $_SESSION['questionIndex']++;
+                }
+            } else {
+                $_SESSION['questionIndex']++;
+            }
+        }
+    }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
-    $questionData = singlequestionID($currentQuestionId, $dbConnection);
-    $isMulti = $questionData['is_multi'];
-
-    if ($isMulti && isset($_POST['submit_multi'])) {
-        $selectedAnswers = isset($_POST['answers']) ? $_POST['answers'] : [];
-        $correctAnswers = array_filter($questionData['answers'], function($answer) {
-            return $answer['is_correct'] == 1;
-        });
-        $correctAnswerIds = array_column($correctAnswers, 'id');
-        $isCorrect = count($selectedAnswers) == count($correctAnswerIds) &&
-                     empty(array_diff($selectedAnswers, $correctAnswerIds));
-
-        if ($isCorrect) {
-            $_SESSION['score']++;
-        }
-        $_SESSION['questionIndex']++;
-    } elseif (!$isMulti && isset($_POST['answer'])) {
-        $selectedAnswerId = $_POST['answer'];
-        $checkAnswerQuery = "SELECT is_correct FROM answers WHERE id = :answerId AND question_id = :questionId";
-        $stmt = $dbConnection->prepare($checkAnswerQuery);
-        $stmt->execute([':answerId' => $selectedAnswerId, ':questionId' => $currentQuestionId]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($result && $result['is_correct'] == 1) {
-            $_SESSION['score']++;
-        }
-        $_SESSION['questionIndex']++;
-    }
-
-    if (isset($_POST['startTime'])) {
-        $startTime = $_POST['startTime'];
-        $_SESSION['startTime'] = $startTime;
-        unset($_POST['startTime']);
-    }
+if (isset($_POST['startTime'])) {
+    $startTime = $_POST['startTime'];
+    $_SESSION['startTime'] = $startTime;
+    unset($_POST['startTime']);
 }
 
-if ($_SESSION['questionIndex'] >= $_SESSION['totalQuestions']) {
-    $quizFinished = true;
+$quizFinished = $quizFinished ?? ($_SESSION['questionIndex'] >= $_SESSION['totalQuestions']);
+if ($quizFinished) {
     $score = $_SESSION['score'];
     $totalQuestions = $_SESSION['totalQuestions'];
 } else {
-    $quizFinished = false;
     $currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
     $questionData = singlequestionID($currentQuestionId, $dbConnection);
-
     $question = $questionData['question'];
     $answers = $questionData['answers'];
     $isMulti = $questionData['is_multi'];
-
     shuffle($answers);
 }
-$currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionIndex'] : 0;
+$currentQuestion = $_SESSION['questionIndex'];
 ?>
 
 <!DOCTYPE html>
@@ -98,7 +109,7 @@ $currentQuestion = isset($_SESSION['questionIndex']) ? (int)$_SESSION['questionI
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <?php include '../utils/header.php'; ?>
+<?php include '../utils/header.php'; ?>
     <div id="countdown-container"></div>
     <div class="quiz-page">
     <?php include '../utils/progressBarStand.php';?>
