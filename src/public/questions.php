@@ -96,42 +96,7 @@ $currentQuestion = $_SESSION['questionIndex'];
     <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        .timer-bar-container {
-            position: relative;
-            width: 800px;
-            height: 500px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .timer-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .timer-ring {
-            width: 100%;
-            height: 100%;
-        }
-        .timer-ring__circle {
-            transition: 0.35s stroke-dashoffset;
-            transform-origin: center;
-            stroke-dasharray: 2584; /* (796 + 796 + 496 + 496) */
-            stroke-dashoffset: 0;
-            filter: drop-shadow(0 0 1px rgba(255, 215, 0, 0.7));
-        }
-        .timer {
-            position: absolute;
-            top: 20px;
-            font-size: 2.5vmin;
-            color: white;
-            display: none;
-        }
-    </style>
+
 </head>
 <body>
 <?php include '../utils/header.php'; ?>
@@ -145,7 +110,6 @@ $currentQuestion = $_SESSION['questionIndex'];
                 <svg class="timer-ring" width="100%" height="100%" viewBox="0 0 800 500">
                     <rect class="timer-ring__circle" x="4" y="4" width="792" height="492" rx="20" ry="20" fill="none" stroke="white" stroke-width="4"/>
                 </svg>
-                <div class="timer">10</div>
             </div>
             <div id="quiz-content" class="quiz-container fadeInElement">
                 <?php if ($quizFinished): ?>
@@ -280,31 +244,27 @@ $currentQuestion = $_SESSION['questionIndex'];
         } else {
             $('#quiz-content').show();
         }
-
         if (<?php echo json_encode($isRapidMode); ?>) {
-            var timerElement = document.querySelector('.timer');
-            var timerRing = document.querySelector('.timer-ring__circle');
-            var totalTime = 6; 
-            var timeLeft = totalTime;
+        var timerRing = document.querySelector('.timer-ring__circle');
+        var totalTime = 6; 
+        var timeLeft = totalTime;
 
-            function updateTimer() {
-                if (timeLeft > 0) {
-                    timeLeft--;
-                    timerElement.textContent = timeLeft;
-                    var progress = (timeLeft / totalTime) * 2584;
-                    timerRing.style.strokeDashoffset = 2584 - progress;
-                    setTimeout(updateTimer, 1000);
-                } else {
-                    // Time's up, move to the next question
-                    document.getElementById('timeout').value = '1';
-                    document.getElementById('quiz-form').submit();
-                }
+        function updateTimer() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                var progress = (timeLeft / totalTime) * 2584;
+                timerRing.style.strokeDashoffset = 2584 - progress;
+                setTimeout(updateTimer, 1000);
+            } else {
+                // Time's up, move to the next question
+                document.getElementById('timeout').value = '1';
+                document.getElementById('quiz-form').submit();
             }
-
-            timerElement.style.display = 'block';
-            updateTimer();
         }
-    });
+
+        updateTimer();
+    }
+        });
 
     function safeStartTime() {
     var hiddenInput = document.getElementById("startTime");
