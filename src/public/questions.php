@@ -7,14 +7,17 @@ if (!isset($_SESSION)) {
 
 $showCountdown = isset($_GET['start_countdown']) && $_GET['start_countdown'] == '1';
 
+// holt die value aus der POST
 $category = $_POST['category'] ?? $_SESSION['category'] ?? '';
 $difficulty = $_POST['difficulty'] ?? $_SESSION['difficulty'] ?? 'easy';
 $mode = $_POST['mode'] ?? $_SESSION['mode'] ?? 'standard';
 
+// speichert values in der session
 $_SESSION['category'] = $category;
 $_SESSION['difficulty'] = $difficulty;
 $_SESSION['mode'] = $mode;
 
+// setzt level auf 2 if difficutly = hard
 $level = ($difficulty === 'hard') ? 2 : 1;
 
 $isEliminationMode = $mode === 'elimination';
@@ -262,7 +265,6 @@ $currentQuestion = $_SESSION['questionIndex'];
                 timerRing.style.strokeDashoffset = 2584 - progress;
                 setTimeout(updateTimer, 1000);
             } else {
-                // Time's up, move to the next question
                 document.getElementById('timeout').value = '1';
                 document.getElementById('quiz-form').submit();
             }
