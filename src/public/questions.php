@@ -8,18 +8,24 @@ if (!isset($_SESSION)) {
 $showCountdown = isset($_GET['start_countdown']) && $_GET['start_countdown'] == '1';
 
 $category = $_POST['category'] ?? $_SESSION['category'] ?? '';
+$difficulty = $_POST['difficulty'] ?? $_SESSION['difficulty'] ?? 'easy';
 $mode = $_POST['mode'] ?? $_SESSION['mode'] ?? 'standard';
+
+$_SESSION['category'] = $category;
+$_SESSION['difficulty'] = $difficulty;
+$_SESSION['mode'] = $mode;
+
+$level = ($difficulty === 'hard') ? 2 : 1;
+
 $isEliminationMode = $mode === 'elimination';
 $isRapidMode = $mode === 'rapid';
 
 // Initialisierung der Quiz-Daten
-if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_SESSION['category'] !== $category) {
-    $questionData = questionIdandIndex($category, $dbConnection, $mode);
+if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_SESSION['category'] !== $category || $_SESSION['difficulty'] !== $difficulty) {
+    $questionData = questionIdandIndex($category, $dbConnection, $mode, $level);
     $_SESSION['questionIds'] = $questionData['questionIds'];
     $_SESSION['questionIndex'] = 0;
     $_SESSION['score'] = 0;
-    $_SESSION['category'] = $category;
-    $_SESSION['mode'] = $mode;
     $_SESSION['totalQuestions'] = count($_SESSION['questionIds']);
     $quizFinished = false;
 }
