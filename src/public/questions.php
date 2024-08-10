@@ -10,6 +10,7 @@ $showCountdown = isset($_GET['start_countdown']) && $_GET['start_countdown'] == 
 $category = $_POST['category'] ?? $_SESSION['category'] ?? '';
 $mode = $_POST['mode'] ?? $_SESSION['mode'] ?? 'standard';
 $isEliminationMode = $mode === 'elimination';
+$isRapidMode = $mode === 'rapid';
 
 // Initialisierung der Quiz-Daten
 if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_SESSION['category'] !== $category) {
@@ -25,36 +26,41 @@ if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_
 
 $quizFinished = false;
 
-// Verarbeitung der Antwort
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['answer']) || isset($_POST['answers']))) {
+// Verarbeitung der Antwort oder des Timeouts
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['answer']) || isset($_POST['answers']) || isset($_POST['timeout']))) {
     $currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
     $questionData = singlequestionID($currentQuestionId, $dbConnection);
     $isMulti = $questionData['is_multi'];
     $isCorrect = false;
 
-    if ($isMulti) {
-        if (isset($_POST['answers'])) {
-            $selectedAnswerIds = $_POST['answers'];
-            $correctAnswerIds = array_column(array_filter($questionData['answers'], function($a) { return $a['is_correct'] == 1; }), 'id');
-            $isCorrect = count($selectedAnswerIds) == count($correctAnswerIds) && 
-                         count(array_diff($selectedAnswerIds, $correctAnswerIds)) == 0;
-        }
-    } else {
-        if (isset($_POST['answer'])) {
-            $selectedAnswerId = $_POST['answer'];
-            $correctAnswerId = array_column(array_filter($questionData['answers'], function($a) { return $a['is_correct'] == 1; }), 'id')[0];
-            $isCorrect = $selectedAnswerId == $correctAnswerId;
-        }
-    }
-
-    if ($isCorrect) {
-        $_SESSION['score']++;
-    }
-
-    if ($isEliminationMode && !$isCorrect) {
-        $quizFinished = true;
-    } else {
+    if (isset($_POST['timeout'])) {
+        // Timer abgelaufen, zur nächsten Frage gehen ohne Punkte
         $_SESSION['questionIndex']++;
+    } else {
+        if ($isMulti) {
+            if (isset($_POST['answers'])) {
+                $selectedAnswerIds = $_POST['answers'];
+                $correctAnswerIds = array_column(array_filter($questionData['answers'], function($a) { return $a['is_correct'] == 1; }), 'id');
+                $isCorrect = count($selectedAnswerIds) == count($correctAnswerIds) && 
+                             count(array_diff($selectedAnswerIds, $correctAnswerIds)) == 0;
+            }
+        } else {
+            if (isset($_POST['answer'])) {
+                $selectedAnswerId = $_POST['answer'];
+                $correctAnswerId = array_column(array_filter($questionData['answers'], function($a) { return $a['is_correct'] == 1; }), 'id')[0];
+                $isCorrect = $selectedAnswerId == $correctAnswerId;
+            }
+        }
+
+        if ($isCorrect) {
+            $_SESSION['score']++;
+        }
+
+        if ($isEliminationMode && !$isCorrect) {
+            $quizFinished = true;
+        } else {
+            $_SESSION['questionIndex']++;
+        }
     }
 }
 
@@ -75,7 +81,7 @@ if ($quizFinished) {
     $isMulti = $questionData['is_multi'];
     shuffle($answers);
 }
-$currentQuestion = $_SESSION['questionIndex'] + 1;
+$currentQuestion = $_SESSION['questionIndex'];
 ?>
 
 <!DOCTYPE html>
@@ -90,15 +96,105 @@ $currentQuestion = $_SESSION['questionIndex'] + 1;
     <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .timer-bar-container {
+            position: relative;
+            width: 800px;
+            height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .timer-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .timer-ring {
+            width: 100%;
+            height: 100%;
+        }
+        .timer-ring__circle {
+            transition: 0.35s stroke-dashoffset;
+            transform-origin: center;
+            stroke-dasharray: 2584; /* (796 + 796 + 496 + 496) */
+            stroke-dashoffset: 0;
+            filter: drop-shadow(0 0 1px rgba(255, 215, 0, 0.7));
+        }
+        .timer {
+            position: absolute;
+            top: 20px;
+            font-size: 2.5vmin;
+            color: white;
+            display: none;
+        }
+    </style>
 </head>
 <body>
 <?php include '../utils/header.php'; ?>
     <div id="countdown-container"></div>
     <div class="quiz-page">
     <?php include '../utils/progressBarStand.php';?>
-    <div class="timer-bar-container">  
-    <?php include '../utils/progressBarRapid.php';?>
-
+    
+    <?php if ($isRapidMode): ?>
+        <div class="timer-bar-container">
+            <div class="timer-container">
+                <svg class="timer-ring" width="100%" height="100%" viewBox="0 0 800 500">
+                    <rect class="timer-ring__circle" x="4" y="4" width="792" height="492" rx="20" ry="20" fill="none" stroke="white" stroke-width="4"/>
+                </svg>
+                <div class="timer">10</div>
+            </div>
+            <div id="quiz-content" class="quiz-container fadeInElement">
+                <?php if ($quizFinished): ?>
+                    <div class="question">
+                        Quiz beendet! Ihr Ergebnis: <?php echo $score; ?> von <?php echo $totalQuestions; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="question">
+                        <?php echo htmlspecialchars($question); ?>
+                    </div>
+                    <?php if ($isMulti): ?>
+                        <form method="POST" action="" id="quiz-form">
+                            <div class="answers">
+                                <?php foreach ($answers as $answer): ?>
+                                    <div class="answer-btn multi-choice">
+                                        <input type="checkbox" 
+                                               id="answer_<?php echo $answer['id']; ?>" 
+                                               name="answers[]" 
+                                               value="<?php echo $answer['id']; ?>">
+                                        <label for="answer_<?php echo $answer['id']; ?>">
+                                            <?php echo htmlspecialchars($answer['answer']); ?>
+                                        </label>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                            <button type="submit" name="submit_multi" class="submit-btn-q">
+                                Antworten einreichen
+                            </button>
+                            <input type="hidden" name="timeout" id="timeout" value="0">
+                        </form>
+                    <?php else: ?>
+                        <form method="POST" action="" id="quiz-form">
+                            <div class="answers">
+                                <?php foreach ($answers as $answer): ?>
+                                    <button type="submit" 
+                                            name="answer" 
+                                            value="<?php echo $answer['id']; ?>" 
+                                            class="answer-btn">
+                                        <?php echo htmlspecialchars($answer['answer']); ?>
+                                    </button>
+                                <?php endforeach; ?>
+                            </div>
+                            <input type="hidden" name="timeout" id="timeout" value="0">
+                        </form>
+                    <?php endif; ?>
+                <?php endif; ?>
+            </div>
+        </div>
+    <?php else: ?>
         <div id="quiz-content" class="quiz-container fadeInElement">
             <?php if ($quizFinished): ?>
                 <div class="question">
@@ -143,7 +239,7 @@ $currentQuestion = $_SESSION['questionIndex'] + 1;
                 <?php endif; ?>
             <?php endif; ?>
         </div>
-    </div>
+    <?php endif; ?>
     
     <form id="hiddenFormStart" method="POST">
         <input type="hidden" name="startTime" id="startTime" value="">
@@ -184,6 +280,30 @@ $currentQuestion = $_SESSION['questionIndex'] + 1;
         } else {
             $('#quiz-content').show();
         }
+
+        if (<?php echo json_encode($isRapidMode); ?>) {
+            var timerElement = document.querySelector('.timer');
+            var timerRing = document.querySelector('.timer-ring__circle');
+            var totalTime = 6; 
+            var timeLeft = totalTime;
+
+            function updateTimer() {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    timerElement.textContent = timeLeft;
+                    var progress = (timeLeft / totalTime) * 2584;
+                    timerRing.style.strokeDashoffset = 2584 - progress;
+                    setTimeout(updateTimer, 1000);
+                } else {
+                    // Time's up, move to the next question
+                    document.getElementById('timeout').value = '1';
+                    document.getElementById('quiz-form').submit();
+                }
+            }
+
+            timerElement.style.display = 'block';
+            updateTimer();
+        }
     });
 
     function safeStartTime() {
@@ -203,8 +323,6 @@ $currentQuestion = $_SESSION['questionIndex'] + 1;
     var form = document.getElementById("hiddenFormEnd");
     form.submit();
     }
-
-
     </script>
     <?php
     
@@ -223,7 +341,7 @@ $currentQuestion = $_SESSION['questionIndex'] + 1;
     }
     
     ?>
-    <?php include '../utils/progressBarRapidJS.php';?>
+    <?php include '../utils/progressBarStandJS.php';?>
 
 </body>
 </html>
