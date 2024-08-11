@@ -29,10 +29,10 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `answers` (
   `id` int NOT NULL,
-  `answer` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `answer` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `is_correct` tinyint(1) NOT NULL,
   `question_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `answers`
@@ -524,24 +524,24 @@ INSERT INTO `answers` (`id`, `answer`, `is_correct`, `question_id`) VALUES
 
 
 CREATE TABLE `name_suffix` (
-  `base_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `base_name` varchar(255) COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `suffix` int DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 
 CREATE TABLE `questions` (
   `id` int NOT NULL,
-  `question` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `question` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `level` int NOT NULL,
   `is_multi` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
   CREATE TABLE `ranking_advanced` (
   `id` int NOT NULL,
-  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `points` int NOT NULL,
   `time` int NOT NULL,
   `animals` tinyint(1) NOT NULL,
@@ -550,7 +550,7 @@ CREATE TABLE `questions` (
   `football` tinyint(1) NOT NULL,
   `beginner` tinyint(1) NOT NULL,
   `advanced` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO `questions` (`id`, `question`, `type`, `level`, `is_multi`) VALUES
 (1, 'Welche der folgenden Länder haben Küsten an der Ostsee?', 'geography', 1, 1),
