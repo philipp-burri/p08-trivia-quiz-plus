@@ -288,7 +288,9 @@ $currentQuestion = $_SESSION['questionIndex'];
     }
     
     ?>
-    <?php include '../utils/progressBarStandJS.php';?>
+    <?php include '../utils/progressBarStandJS.php';
+
+    ?>
 
 </body>
 </html>
