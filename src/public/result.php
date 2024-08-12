@@ -46,7 +46,8 @@ function formatTime($quizTimeInMil) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="icon" href="/assets/img/faviconQ.png" type="image/x-icon">
+    <title>Resultate</title>
 </head>
 <body>
 <?php include '../utils/header.php'; ?>
