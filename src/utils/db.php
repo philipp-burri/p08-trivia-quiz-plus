@@ -23,7 +23,7 @@ function prettyPrint($a){
 
 function questionIdandIndex($category, $dbConnection, $mode = 'standard', $level = 1) {
   if ($mode === 'elimination') {
-      $singleChoiceCount = 10;
+      $singleChoiceCount = 20;
       $query = "SELECT id FROM questions WHERE type = :category AND is_multi = 0 AND level = :level ORDER BY RAND() LIMIT :singleChoiceCount";
       
       $stmt = $dbConnection->prepare($query);

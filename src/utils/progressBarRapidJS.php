@@ -4,9 +4,9 @@ let currentQuestionNr = <?php echo (int)$currentQuestion; ?>;
 let timeLeft = 10;
 let timer;
 let questions = 10;
-var startTime; // Variable für die Startzeit
+/* var startTime; // Variable für die Startzeit
 var totalTime; // Variable für die gesamte Zeit
-var endTime;
+var endTime; */
 
 const timerEl = document.querySelector('.timer');
 

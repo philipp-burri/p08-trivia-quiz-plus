@@ -23,21 +23,44 @@ $level = ($difficulty === 'hard') ? 2 : 1;
 $isEliminationMode = $mode === 'elimination';
 $isRapidMode = $mode === 'rapid';
 
-// Initialisierung der Quiz-Daten
-if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_SESSION['category'] !== $category || $_SESSION['difficulty'] !== $difficulty) {
+// Initialisierung der Quiz-Daten original
+/* if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_SESSION['category'] !== $category || $_SESSION['difficulty'] !== $difficulty) {
     $questionData = questionIdandIndex($category, $dbConnection, $mode, $level);
     $_SESSION['questionIds'] = $questionData['questionIds'];
     $_SESSION['questionIndex'] = 0;
     $_SESSION['score'] = 0;
     $_SESSION['totalQuestions'] = count($_SESSION['questionIds']);
     $quizFinished = false;
+} */
+
+// Initialisierung der Quiz-Daten für Elimination Mode
+if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_SESSION['category'] !== $category || $_SESSION['difficulty'] !== $difficulty) {
+    if ($isEliminationMode) {
+        $questionData = questionIdandIndexElimination($category, $dbConnection, $level);
+        $_SESSION['questionIdsElimination'] = $questionData['questionIds'];
+        $_SESSION['questionIndexElimination'] = 0;
+        $_SESSION['scoreElimination'] = 0;
+        $_SESSION['totalQuestionsElimination'] = count($_SESSION['questionIdsElimination']);
+    } else {
+        $questionData = questionIdandIndex($category, $dbConnection, $mode, $level);
+        $_SESSION['questionIds'] = $questionData['questionIds'];
+        $_SESSION['questionIndex'] = 0;
+        $_SESSION['score'] = 0;
+        $_SESSION['totalQuestions'] = count($_SESSION['questionIds']);
+    }
+    $quizFinished = false;
 }
+
 
 $quizFinished = false;
 
 // Verarbeitung der Antwort oder des Timeouts
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['answer']) || isset($_POST['answers']) || isset($_POST['timeout']))) {
-    $currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
+    if ($isEliminationMode) {
+        $currentQuestionId = $_SESSION['questionIdsElimination'][$_SESSION['questionIndexElimination']];
+    } else {
+        $currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
+    }
     $questionData = singlequestionID($currentQuestionId, $dbConnection);
     $isMulti = $questionData['is_multi'];
     $isCorrect = false;
@@ -61,13 +84,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['answer']) || isset($
             }
         }
 
-        if ($isCorrect) {
-            $_SESSION['score']++;
-        }
-
-        if ($isEliminationMode && !$isCorrect) {
-            $quizFinished = true;
+        if ($isEliminationMode) {
+            if ($isCorrect) {
+                $_SESSION['scoreElimination']++;
+                $_SESSION['questionIndexElimination']++;
+            } else {
+                $quizFinished = true;
+            }
         } else {
+            if ($isCorrect) {
+                $_SESSION['score']++;
+            }
             $_SESSION['questionIndex']++;
         }
     }
@@ -78,12 +105,12 @@ if (isset($_POST['startTime'])) {
     unset($_POST['startTime']);
 }
 
-$quizFinished = $quizFinished || ($_SESSION['questionIndex'] >= $_SESSION['totalQuestions']);
-if ($quizFinished) {
-    $score = $_SESSION['score'];
-    $totalQuestions = $_SESSION['totalQuestions'];
-} else {
-    $currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
+if (!$quizFinished) {
+    if ($isEliminationMode) {
+        $currentQuestionId = $_SESSION['questionIdsElimination'][$_SESSION['questionIndexElimination']];
+    } else {
+        $currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
+    }
     $questionData = singlequestionID($currentQuestionId, $dbConnection);
     $question = $questionData['question'];
     $answers = $questionData['answers'];
@@ -111,7 +138,7 @@ $currentQuestion = $_SESSION['questionIndex'];
 <?php include '../utils/header.php'; ?>
     <div id="countdown-container"></div>
     <div class="quiz-page">
-    <?php include '../utils/progressBarStand.php';?>
+    <!-- <?php include '../utils/progressBarStand.php';?> -->
     
     <?php if ($isRapidMode): ?>
         <div class="timer-bar-container">
@@ -222,7 +249,7 @@ $currentQuestion = $_SESSION['questionIndex'];
     </form>
 </div>
     <script>
-    $(document).ready(function () {
+     $(document).ready(function () {
         var showCountdown = <?php echo json_encode($showCountdown); ?>;
         
         if (showCountdown) {
@@ -254,25 +281,29 @@ $currentQuestion = $_SESSION['questionIndex'];
             $('#quiz-content').show();
         }
         if (<?php echo json_encode($isRapidMode); ?>) {
-        var timerRing = document.querySelector('.timer-ring__circle');
-        var totalTime = 6; 
-        var timeLeft = totalTime;
+            var timerRing = document.querySelector('.timer-ring__circle');
+            var totalTime = 10000; // 10 Sekunden in Millisekunden
+            var startTime = Date.now();
 
-        function updateTimer() {
+
+                function updateTimer() {
+                var currentTime = Date.now();
+                var elapsedTime = currentTime - startTime;
+                var timeLeft = Math.max(0, totalTime - elapsedTime);
+
             if (timeLeft > 0) {
-                timeLeft--;
                 var progress = (timeLeft / totalTime) * 2584;
                 timerRing.style.strokeDashoffset = 2584 - progress;
-                setTimeout(updateTimer, 1000);
+                requestAnimationFrame(updateTimer);
             } else {
                 document.getElementById('timeout').value = '1';
                 document.getElementById('quiz-form').submit();
             }
         }
 
-        updateTimer();
+        requestAnimationFrame(updateTimer);
     }
-        });
+});
 
     function safeStartTime() {
     var hiddenInput = document.getElementById("startTime");
@@ -290,7 +321,7 @@ $currentQuestion = $_SESSION['questionIndex'];
     hiddenInput.value = endTime;
     var form = document.getElementById("hiddenFormEnd");
     form.submit();
-    }
+    } 
     </script>
     <?php
     
@@ -309,7 +340,7 @@ $currentQuestion = $_SESSION['questionIndex'];
     }
     
     ?>
-    <?php include '../utils/progressBarStandJS.php';?>
+    <!-- <?php include '../utils/progressBarStandJS.php';?> -->
 
 </body>
 </html>
