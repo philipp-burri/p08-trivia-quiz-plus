@@ -11,7 +11,7 @@
                 document.getElementById('categoryInput').value = selectedCategory; 
                 categories.style.display = 'none';
                 difficulties.style.display = 'flex';
-                document.getElementById('selectionTitle').textContent = 'SCHWIERIGKEIT';
+                document.getElementById('selectionTitle').textContent = '';
             }
         });
 
@@ -21,7 +21,7 @@
                 document.getElementById('difficultyInput').value = selectedDifficulty;
                 difficulties.style.display = 'none';
                 modes.style.display = 'flex';
-                document.getElementById('selectionTitle').textContent = 'MODUS';
+                document.getElementById('selectionTitle').textContent = '';
             }
         });
 

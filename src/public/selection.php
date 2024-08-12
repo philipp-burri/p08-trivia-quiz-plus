@@ -31,7 +31,7 @@ $mode = $_SESSION['selected_mode'] ?? 'easy';
 <body>
   <?php include '../utils/header.php'; ?>
     <div class="selection-container">
-        <h1 class="title" id="selectionTitle">KATEGORIE</h1>
+        <h1 class="title" id="selectionTitle"></h1>
         <div class="card-container" id="categories">
             <div class="card" data-category="football">
                 <div class="card-inner">
@@ -73,22 +73,25 @@ $mode = $_SESSION['selected_mode'] ?? 'easy';
         </div>
         
         <div class="card-container" id="modes" style="display: none;">
-            <div class="card" data-mode="standard">
-                <div class="card-inner">
-                    <p>Standard</p>
-                </div>
-            </div>
-            <div class="card" data-mode="rapid">
-                <div class="card-inner">
-                    <p>Rapid</p>
-                </div>
-            </div>
-            <div class="card" data-mode="elimination">
-                <div class="card-inner">
-                    <p>Elimination</p>
-                </div>
-            </div>
+    <div class="card" data-mode="standard">
+        <div class="card-inner">
+            <p class="mode-title">Standard</p>
+            <p class="mode-description">10 Fragen ohne Zeitdruck</p>
         </div>
+    </div>
+    <div class="card" data-mode="rapid">
+        <div class="card-inner">
+            <p class="mode-title">Rapid</p>
+            <p class="mode-description">Beantworte 10 Fragen mit einem Timer von 10 Sekunden</p>
+        </div>
+    </div>
+    <div class="card" data-mode="elimination">
+        <div class="card-inner">
+            <p class="mode-title">Elimination</p>
+            <p class="mode-description">Bei falscher Antwort scheidest du aus</p>
+        </div>
+    </div>
+</div>
     </div>
     <form id="quizForm" action="questions.php" method="post">
     <input type="hidden" name="category" id="categoryInput">

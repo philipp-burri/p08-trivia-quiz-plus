@@ -156,21 +156,22 @@ body, html {
 
 #modes .card {
     width: 400px;
-    height: 100px;
+    height: 150px; /* Feste Höhe für alle Karten */
     margin-bottom: 20px; 
     animation: slideInFromTop 0.5s ease-out forwards;
     animation-delay: calc(var(--animation-order) * 0.1s);
     opacity: 0;
 }
-
 #modes .card-inner {
-    flex-direction: row;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-between; /* Verteilt den Inhalt gleichmäßig */
     align-items: center;
+    padding: 20px;
+    height: 100%; /* Füllt die gesamte Kartenhöhe aus */
 }
 
 #modes .card p {
-    font-size: 28px;
+   
     margin: 0;
 }
 
@@ -182,3 +183,28 @@ body, html {
 .card:nth-child(2) { --animation-order: 2; }
 .card:nth-child(3) { --animation-order: 3; }
 .card:nth-child(4) { --animation-order: 4; }
+
+
+#modes .card-inner {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#modes .mode-title {
+    font-size: 32px;
+    margin: 0;
+    font-weight: bold;
+}
+
+#modes .mode-description {
+    font-size: 18px;
+    margin: 0;
+    text-align: center;
+    /* Fügt Flexibilität hinzu, um den Text bei Bedarf zu kürzen */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
