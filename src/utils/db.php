@@ -15,11 +15,6 @@ try {
     echo $e->getMessage();
 }
 
-function prettyPrint($a){
-  echo '<pre>';
-  print_r($a);
-  echo '</pre>';
-}
 
 function questionIdandIndex($category, $dbConnection, $mode = 'standard', $level = 1) {
   if ($mode === 'elimination') {
