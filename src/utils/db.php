@@ -21,30 +21,39 @@ function prettyPrint($a){
   echo '</pre>';
 }
 
-function questionIdandIndex($category, $dbConnection, $mode = 'standard', $level = 1) {
-  if ($mode === 'elimination') {
-      $singleChoiceCount = 20;
-      $query = "SELECT id FROM questions WHERE type = :category AND is_multi = 0 AND level = :level ORDER BY RAND() LIMIT :singleChoiceCount";
-      
-      $stmt = $dbConnection->prepare($query);
-      $stmt->bindParam(':category', $category, PDO::PARAM_STR);
-      $stmt->bindParam(':level', $level, PDO::PARAM_INT);
-      $stmt->bindParam(':singleChoiceCount', $singleChoiceCount, PDO::PARAM_INT);
-  } else {
-      $multipleChoiceCount = 2;
-      $singleChoiceCount = 8;
-      $query = "
-          (SELECT id FROM questions WHERE type = :category AND is_multi = 1 AND level = :level ORDER BY RAND() LIMIT :multipleChoiceCount)
-          UNION ALL
-          (SELECT id FROM questions WHERE type = :category AND is_multi = 0 AND level = :level ORDER BY RAND() LIMIT :singleChoiceCount)
-      ";
-      
-      $stmt = $dbConnection->prepare($query);
-      $stmt->bindParam(':category', $category, PDO::PARAM_STR);
-      $stmt->bindParam(':level', $level, PDO::PARAM_INT);
-      $stmt->bindParam(':multipleChoiceCount', $multipleChoiceCount, PDO::PARAM_INT);
-      $stmt->bindParam(':singleChoiceCount', $singleChoiceCount, PDO::PARAM_INT);
-  }
+function questionIdandIndexElimination($category, $dbConnection, $level = 1) {
+  $singleChoiceCount = 20; // Oder eine andere gewünschte Anzahl
+  $query = "SELECT id FROM questions WHERE type = :category AND is_multi = 0 AND level = :level ORDER BY RAND() LIMIT :singleChoiceCount";
+  
+  $stmt = $dbConnection->prepare($query);
+  $stmt->bindParam(':category', $category, PDO::PARAM_STR);
+  $stmt->bindParam(':level', $level, PDO::PARAM_INT);
+  $stmt->bindParam(':singleChoiceCount', $singleChoiceCount, PDO::PARAM_INT);
+  
+  $stmt->execute();
+  $questionIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+  shuffle($questionIds);
+  
+  return [
+      'questionIds' => $questionIds,
+      'questionIndex' => 0
+  ];
+}
+
+function questionIdandIndex($category, $dbConnection, $level = 1) {
+  $multipleChoiceCount = 2;
+  $singleChoiceCount = 8;
+  $query = "
+      (SELECT id FROM questions WHERE type = :category AND is_multi = 1 AND level = :level ORDER BY RAND() LIMIT :multipleChoiceCount)
+      UNION ALL
+      (SELECT id FROM questions WHERE type = :category AND is_multi = 0 AND level = :level ORDER BY RAND() LIMIT :singleChoiceCount)
+  ";
+  
+  $stmt = $dbConnection->prepare($query);
+  $stmt->bindParam(':category', $category, PDO::PARAM_STR);
+  $stmt->bindParam(':level', $level, PDO::PARAM_INT);
+  $stmt->bindParam(':multipleChoiceCount', $multipleChoiceCount, PDO::PARAM_INT);
+  $stmt->bindParam(':singleChoiceCount', $singleChoiceCount, PDO::PARAM_INT);
   
   $stmt->execute();
   $questionIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
