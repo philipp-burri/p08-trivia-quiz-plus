@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/index.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="/assets/img/trivia-quiz-high-resolution-logo.png" type="image/x-icon">
 </head>
 <body>
 

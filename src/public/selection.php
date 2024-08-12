@@ -24,6 +24,8 @@ $mode = $_SESSION['selected_mode'] ?? 'easy';
     <link rel="stylesheet" href="assets/css/header.css">
     <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="/assets/img/trivia-quiz-high-resolution-logo.png" type="image/x-icon">
+    
     <script src="../assets/js/main.js"></script>
 </head>
 <body>
@@ -34,25 +36,25 @@ $mode = $_SESSION['selected_mode'] ?? 'easy';
             <div class="card" data-category="football">
                 <div class="card-inner">
                     <i class="fas fa-futbol"></i>
-                    <p>Football</p>
+                    <p>Fussball</p>
                 </div>
             </div>
             <div class="card" data-category="history">
                 <div class="card-inner">
                     <i class="fas fa-book"></i>
-                    <p>History</p>
+                    <p>Geschichte</p>
                 </div>
             </div>
             <div class="card" data-category="animals">
                 <div class="card-inner">
                     <i class="fas fa-paw"></i>
-                    <p>Animals</p>
+                    <p>Tiere</p>
                 </div>
             </div>
             <div class="card" data-category="geography">
                 <div class="card-inner">
                     <i class="fas fa-globe"></i>
-                    <p>Geography</p>
+                    <p>Geographie</p>
                 </div>
             </div>
         </div>
@@ -60,12 +62,12 @@ $mode = $_SESSION['selected_mode'] ?? 'easy';
         <div class="card-container" id="difficulties" style="display: none;">
             <div class="card" data-difficulty="easy">
                 <div class="card-inner">
-                    <p>Easy</p>
+                    <p>Einfach</p>
                 </div>
             </div>
             <div class="card" data-difficulty="hard">
                 <div class="card-inner">
-                    <p>Hard</p>
+                    <p>Schwer</p>
                 </div>
             </div>
         </div>
