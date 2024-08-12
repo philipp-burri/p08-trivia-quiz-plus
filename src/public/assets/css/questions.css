@@ -1,13 +1,17 @@
-.fadeInElement{
+.fadeInElement {
     animation-name: bodyTransition;
     animation-duration: 0.75s;
     animation-iteration-count: 1;
 }
 
-@keyframes bodyTransition{
+@keyframes bodyTransition {
     from {opacity: 0;}
     to {opacity: 1;}
-  }
+}
+
+#quiz-page{
+    margin-top: 100px;
+}
 
 #countdown {
     position: fixed;
@@ -52,30 +56,39 @@ body, html {
 .quiz-container {
     border-radius: 20px;
     padding: 40px;
-    width: 700px;
+    width: 788px;
+    height: 488px;
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
     display: flex;
     flex-direction: column;
-    min-height: 500px;
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.1);
+    overflow-y: auto;
+}
+
+.progress {
+    margin-bottom: 20px;
+    color: white;
+    font-size: 1.2em;
 }
 
 .question {
-    font-size: 2em;
+    font-size: 1.8em;
     color: white;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     text-align: center;
     font-weight: bold;
-    flex: 0 0 auto;
-    min-height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
+
 .answers {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    flex: 1 0 auto;
+    gap: 20px;
+    margin-bottom: 20px;
 }
 
 .answer-btn,
@@ -92,12 +105,16 @@ body, html {
     align-items: center;
     justify-content: center;
     text-align: center;
-    height: 100%;
+    height: auto;
+    min-height: 60px;
     width: 100%;
     box-sizing: border-box;
     position: relative;
 }
 
+.answer-btn.multi-choice {
+    padding: 0;
+}
 
 .answer-btn.multi-choice input[type="checkbox"] {
     position: absolute;
@@ -126,6 +143,10 @@ body, html {
     background-color: #5a189a;
 }
 
+.answer-btn.multi-choice input[type="checkbox"]:checked + label {
+    background-color: #5a189a;
+}
+
 .answer-btn.multi-choice input[type="checkbox"]:checked + label::after {
     content: '✓';
     position: absolute;
@@ -137,19 +158,19 @@ body, html {
 }
 
 .submit-btn-q {
-    grid-column: 1 / -1;
-    padding: 20px;
+    display: block;
+    width: 100%;
+    margin: 20px auto 0;
     border: 3px solid white;
     background-color: rgb(255, 255, 255);
     color: #5a189a;
     cursor: pointer;
-    border-radius: 15px;
     transition: all 0.3s ease;
     font-size: 1.2em;
-    margin-top: 30px;
+    padding: 15px;
     text-align: center;
-    width: 50%;
-    justify-self: center;
+    font-weight: bold;
+    border-radius: 15px;
 }
 
 .submit-btn-q:hover {
@@ -158,13 +179,7 @@ body, html {
 }
 
 @keyframes gradientBG {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
