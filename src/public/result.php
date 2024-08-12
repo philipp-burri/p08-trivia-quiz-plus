@@ -3,7 +3,7 @@
 } 
 
 include __DIR__ . '/../utils/db.php';
-/* include __DIR__ . '/../utils/ranked.php'; */
+include __DIR__ . '/../utils/ranked.php';
 
 if (isset($_POST['endTime'])) {
     $endTime = $_POST['endTime'];
@@ -23,6 +23,8 @@ $quizTimeInSec = $interval->s + ($interval->i * 60) + ($interval->h * 3600) + ($
 $quizTimeInMil = ($quizTimeInSec * 1000) + ($interval->f * 1000);
 $_SESSION['quiztime']= $quizTimeInMil;
 
+$lowestScore = checkRank($dbConnection, $category, $difficulty, $mode);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,11 +36,36 @@ $_SESSION['quiztime']= $quizTimeInMil;
 <body>
 <?php include '../utils/header.php'; ?>
 
-<form action="assets/scripts.php" method="POST">
-    <input type="hidden" name="send_ranking_advanced" value="1">
-    <input type="text" name="name" placeholder="Dein Name" required>
-    <button type="submit">Absenden</button>
-</form>
+<?php
+
+if ($lowestScore === null) {
+    // Weniger als 10 Einträge, immer zur Bestenliste eintragen
+    echo <<<HTML
+    <p>Gratulation! Du hast es unter die 10 besten geschafft. Trage dich in die Bestenliste ein.</p>
+    <form action="assets/scripts.php" method="POST">
+        <input type="hidden" name="send_ranking_advanced" value="1">
+        <input type="text" name="name" placeholder="Dein Name" required>
+        <button type="submit">Absenden</button>
+    </form>
+    HTML;
+} elseif ($_SESSION['score'] > $lowestScore['points'] || 
+    ($_SESSION['score'] == $lowestScore['points'] && $_SESSION['quiztime'] < $lowestScore['time'])) {
+    // 10 oder mehr Einträge und der aktuelle Score ist besser
+    echo <<<HTML
+    <p>Gratulation! Du hast es unter die 10 besten geschafft. Trage dich in die Bestenliste ein.</p>
+    <form action="assets/scripts.php" method="POST">
+        <input type="hidden" name="send_ranking_advanced" value="1">
+        <input type="text" name="name" placeholder="Dein Name" required>
+        <button type="submit">Absenden</button>
+    </form>
+    HTML;
+} else {
+    // Der aktuelle Score ist nicht besser
+    echo "Leider hast du es nicht in die Bestenliste geschafft";
+}
+
+?>
+
 
 </body>
 </html>
