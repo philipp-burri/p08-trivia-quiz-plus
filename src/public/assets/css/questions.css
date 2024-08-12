@@ -27,6 +27,8 @@
 
 #quiz-content {
     display: none;
+    display: flex;
+    justify-content: space-around;
 }
 
 body, html {
@@ -68,6 +70,7 @@ body, html {
     transform: translate(-50%, -50%);
     background-color: rgba(255, 255, 255, 0.1);
     overflow-y: auto;
+
 }
 
 .progress {
@@ -91,8 +94,14 @@ body, html {
     margin-bottom: 20px;
 }
 
+.answer-wrapper {
+    display: flex;
+    align-items: stretch;
+}
+
 .answer-btn,
 .answer-btn.multi-choice {
+    flex-grow: 1;
     padding: 20px;
     border: 3px solid white;
     background-color: rgba(255, 255, 255, 0.2);
@@ -105,7 +114,6 @@ body, html {
     align-items: center;
     justify-content: center;
     text-align: center;
-    height: auto;
     min-height: 60px;
     width: 100%;
     box-sizing: border-box;
@@ -114,14 +122,6 @@ body, html {
 
 .answer-btn.multi-choice {
     padding: 0;
-}
-
-.answer-btn.multi-choice input[type="checkbox"] {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
 }
 
 .answer-btn.multi-choice label {
@@ -135,6 +135,18 @@ body, html {
     padding: 20px;
     box-sizing: border-box;
 }
+
+/* Rest des CSS bleibt unverändert */
+
+.answer-btn.multi-choice input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+
 
 .answer-btn:hover,
 .answer-btn.multi-choice:hover {

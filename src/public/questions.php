@@ -193,10 +193,11 @@ $currentQuestion = $_SESSION['questionIndex'];
                                     </label>
                                 </div>
                             <?php endforeach; ?>
+                     
                         </div>
-                        <button type="submit" name="submit_multi" class="submit-btn-q">
+                            <button type="submit" name="submit_multi" class="submit-btn-q">
                             Antworten einreichen
-                        </button>
+                            </button>
                     </form>
                 <?php else: ?>
                     <form method="POST" action="">
