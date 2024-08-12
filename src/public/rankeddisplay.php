@@ -32,6 +32,7 @@
         return $formattedTime;
     }
     
+    
 
     $ranked= displayRankedAndvanced($dbConnection, $category, $difficulty, $mode);
 
