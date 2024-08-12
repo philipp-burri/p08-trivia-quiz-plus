@@ -85,15 +85,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['answer']) || isset($
         }
 
         if ($isEliminationMode) {
-            $quizFinished = $quizFinished || ($_SESSION['questionIndexElimination'] >= $_SESSION['totalQuestionsElimination']);
-            $score = $_SESSION['scoreElimination'];
-            $totalQuestions = $_SESSION['totalQuestionsElimination'];
-            $currentQuestion = $_SESSION['questionIndexElimination'];
+            if ($isCorrect) {
+                $_SESSION['scoreElimination']++;
+                $_SESSION['questionIndexElimination']++;
+            } else {
+                $quizFinished = true;
+            }
         } else {
-            $quizFinished = $_SESSION['questionIndex'] >= $_SESSION['totalQuestions'];
-            $score = $_SESSION['score'];
-            $totalQuestions = $_SESSION['totalQuestions'];
-            $currentQuestion = $_SESSION['questionIndex'];
+            if ($isCorrect) {
+                $_SESSION['score']++;
+            }
+            $_SESSION['questionIndex']++;
         }
     }
 }
@@ -103,6 +105,7 @@ if (isset($_POST['startTime'])) {
     unset($_POST['startTime']);
 }
 
+// Anzeige der aktuellen Frage
 if (!$quizFinished) {
     if ($isEliminationMode) {
         $currentQuestionId = $_SESSION['questionIdsElimination'][$_SESSION['questionIndexElimination']];
@@ -116,6 +119,20 @@ if (!$quizFinished) {
     shuffle($answers);
 }
 $currentQuestion = $_SESSION['questionIndex'];
+
+
+// Logik für das Beenden des Quiz
+if ($isEliminationMode) {
+    $quizFinished = $quizFinished || ($_SESSION['questionIndexElimination'] >= $_SESSION['totalQuestionsElimination']);
+    $score = $_SESSION['scoreElimination'];
+    $totalQuestions = $_SESSION['totalQuestionsElimination'];
+    $currentQuestion = $_SESSION['questionIndexElimination'];
+} else {
+    $quizFinished = $_SESSION['questionIndex'] >= $_SESSION['totalQuestions'];
+    $score = $_SESSION['score'];
+    $totalQuestions = $_SESSION['totalQuestions'];
+    $currentQuestion = $_SESSION['questionIndex'];
+}
 ?>
 
 <!DOCTYPE html>
