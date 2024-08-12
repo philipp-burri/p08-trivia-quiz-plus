@@ -98,6 +98,7 @@ $currentQuestion = $_SESSION['questionIndex'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TriviaQuiz++ - Fragen</title>
     <link rel="stylesheet" href="assets/css/header.css">
     <link rel="stylesheet" href="assets/css/questions.css">
     <link rel="stylesheet" href="assets/css/progressBarStand.css">
