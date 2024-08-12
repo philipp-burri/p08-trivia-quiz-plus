@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/leaderboard.css">
+    <link rel="stylesheet" href="assets/css/header.css">
     <title>Leaderboard</title>
 </head>
 <body>
+<?php include '../utils/header.php'; ?>
 <form action="assets/scripts.php" method="POST">
     <select name="category" id="category">
         <option value="animals">Tiere</option>
@@ -23,7 +25,7 @@
         <option value="rapid">Rapid</option>
         <option value="elimination">Elimination</option>
     </select>
-    <button type="submit">advanced</button>
+    <button type="submit">Zum Leaderboard</button>
 </form> 
 </body>
 </html>
