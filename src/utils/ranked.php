@@ -110,3 +110,32 @@ function displayRankedAndvanced($dbConnection, $category, $difficulty, $mode){
 
     return $displayRankedAdvanced;
 }
+
+function checkRank($dbConnection, $category, $difficulty, $mode) {
+    // Zähle die Anzahl der Einträge, die den Kriterien entsprechen
+    $sqlCount = "SELECT COUNT(*) AS total 
+                 FROM ranking_advanced
+                 WHERE $category = 1 AND $difficulty = 1 AND $mode = 1";
+    
+    $stmtCount = $dbConnection->prepare($sqlCount);
+    $stmtCount->execute();
+    $totalCount = $stmtCount->fetchColumn();
+
+    // Falls weniger als 10 Einträge vorhanden sind, füge immer einen neuen Eintrag hinzu
+    if ($totalCount < 10) {
+        return null; // Oder du könntest ein Flag zurückgeben, das anzeigt, dass der Eintrag immer hinzugefügt werden soll
+    }
+
+    // Wenn 10 oder mehr Einträge vorhanden sind, finde die schlechteste Punktzahl
+    $sqlDisplayTest = "SELECT points, time
+                       FROM ranking_advanced
+                       WHERE $category = 1 AND $difficulty = 1 AND $mode = 1
+                       ORDER BY points DESC, time ASC
+                       LIMIT 1"; // Finde den letzten Eintrag, der die schlechteste Punktzahl hat
+    
+    $stmt = $dbConnection->prepare($sqlDisplayTest);
+    $stmt->execute();
+    $lowestScore = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $lowestScore;
+}
