@@ -26,7 +26,7 @@ function setProgress(percent) {
 }
 
 function setTimer(percent) {
-    const offset = percent / 100 * timerCircumference;
+    const offset = (100 - percent) / 100 * timerCircumference;
     timerRect.style.strokeDashoffset = offset;
 }
 
@@ -37,19 +37,24 @@ function countUp() {
 function startTimer() {
     if (currentQuestionNr <= 9) {
         const startTime = Date.now();
-        const duration = 10000; // 10 Sekunden
+        const duration = 10000; // 10 Sekunden in Millisekunden
 
-        timer = setInterval(() => {
+        function updateTimer() {
             const elapsedTime = Date.now() - startTime;
-            timeLeft = Math.max(0, 10 - Math.floor(elapsedTime / 1000));
+            const remainingTime = Math.max(0, duration - elapsedTime);
+            timeLeft = Math.ceil(remainingTime / 1000);
+
             timerEl.textContent = timeLeft;
-            setTimer((elapsedTime / duration) * 100);
-            
-            if (elapsedTime >= duration) {
-                clearInterval(timer);
+            setTimer(100 - (timeLeft / 10 * 100)); // Korrigierte Berechnung
+
+            if (timeLeft > 0) {
+                requestAnimationFrame(updateTimer);
+            } else {
                 countUp();
             }
-        }, 50); // Aktualisierung alle 50ms für flüssigere Animation
+        }
+
+        updateTimer();
     }
 }
 
