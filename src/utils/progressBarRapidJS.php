@@ -12,7 +12,7 @@ const timerEl = document.querySelector('.timer');
 
 const timerRect = document.querySelector('.timer-ring__circle');
 const progressRect = document.querySelector('.progress-ring__circle');
-const timerCircumference = 2352; // Neuer Umfang für das äußere Rechteck (2 * (788 + 388))
+const timerCircumference = 2584; // (796 + 796 + 496 + 496)
 const progressCircumference = 2224; // Neuer Umfang für das innere Rechteck (2 * (756 + 356))
 
 timerRect.style.strokeDasharray = `${timerCircumference} ${timerCircumference}`;
@@ -26,7 +26,7 @@ function setProgress(percent) {
 }
 
 function setTimer(percent) {
-    const offset = (100 - percent) / 100 * timerCircumference;
+    const offset = timerCircumference * (1 - percent / 100);
     timerRect.style.strokeDashoffset = offset;
 }
 
@@ -42,10 +42,10 @@ function startTimer() {
         function updateTimer() {
             const elapsedTime = Date.now() - startTime;
             const remainingTime = Math.max(0, duration - elapsedTime);
-            timeLeft = Math.ceil(remainingTime / 1000);
+            timeLeft = remainingTime / 1000;
 
-            timerEl.textContent = timeLeft;
-            setTimer(100 - (timeLeft / 10 * 100)); // Korrigierte Berechnung
+            timerEl.textContent = Math.ceil(timeLeft);
+            setTimer((1 - timeLeft / 10) * 100);
 
             if (timeLeft > 0) {
                 requestAnimationFrame(updateTimer);
@@ -54,7 +54,7 @@ function startTimer() {
             }
         }
 
-        updateTimer();
+        requestAnimationFrame(updateTimer);
     }
 }
 
