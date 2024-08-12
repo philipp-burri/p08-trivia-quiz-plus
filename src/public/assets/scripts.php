@@ -26,4 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['category']) && isset(
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_ranking_advanced'])) {
     rankedAdvanced($dbConnection, $name, $points, $time, $animals, $geography, $history, $football, $easy, $hard, $standard, $rapid, $elimination, $category, $difficulty, $mode);
+    header('Location: /rankeddisplay.php');
 }
+
+

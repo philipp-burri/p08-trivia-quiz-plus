@@ -37,26 +37,8 @@ $_SESSION['quiztime']= $quizTimeInMil;
 <form action="assets/scripts.php" method="POST">
     <input type="hidden" name="send_ranking_advanced" value="1">
     <input type="text" name="name" placeholder="Dein Name" required>
-    <button type="submit">advanced</button>
+    <button type="submit">Absenden</button>
 </form>
 
-<form action="assets/scripts.php" method="POST">
-    <select name="category" id="category">
-        <option value="animals">Tiere</option>
-        <option value="geography">Geographie</option>
-        <option value="history">Geschichte</option>
-        <option value="football">Fussball</option>
-    </select>
-    <select name="difficulty" id="difficulty">
-        <option value="easy">Anfänger</option>
-        <option value="hard">Fortgeschritten</option>
-    </select>
-    <select name="mode" id="mode">
-        <option value="standard">Standard</option>
-        <option value="rapid">Rapid</option>
-        <option value="elimination">Elimination</option>
-    </select>
-    <button type="submit">advanced</button>
-</form>
 </body>
 </html>

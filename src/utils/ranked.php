@@ -4,8 +4,8 @@ if (!isset($_SESSION)) {
 }
 
 $name = $_POST['name'] ?? 'NoName';
-$points = $_SESSION['score'];
-$time = $_SESSION['quiztime'];
+$points = $_SESSION['score'] ?? '';
+$time = $_SESSION['quiztime'] ?? '';
 $animals = (isset($_SESSION['category']) && $_SESSION['category'] === 'animals') ? 1 : 0;
 $geography = (isset($_SESSION['category']) && $_SESSION['category'] === 'geography') ? 1 : 0;
 $history = (isset($_SESSION['category']) && $_SESSION['category'] === 'history') ? 1 : 0;
