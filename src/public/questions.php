@@ -85,17 +85,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['answer']) || isset($
         }
 
         if ($isEliminationMode) {
-            if ($isCorrect) {
-                $_SESSION['scoreElimination']++;
-                $_SESSION['questionIndexElimination']++;
-            } else {
-                $quizFinished = true;
-            }
+            $quizFinished = $quizFinished || ($_SESSION['questionIndexElimination'] >= $_SESSION['totalQuestionsElimination']);
+            $score = $_SESSION['scoreElimination'];
+            $totalQuestions = $_SESSION['totalQuestionsElimination'];
+            $currentQuestion = $_SESSION['questionIndexElimination'];
         } else {
-            if ($isCorrect) {
-                $_SESSION['score']++;
-            }
-            $_SESSION['questionIndex']++;
+            $quizFinished = $_SESSION['questionIndex'] >= $_SESSION['totalQuestions'];
+            $score = $_SESSION['score'];
+            $totalQuestions = $_SESSION['totalQuestions'];
+            $currentQuestion = $_SESSION['questionIndex'];
         }
     }
 }

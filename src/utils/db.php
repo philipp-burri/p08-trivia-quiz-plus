@@ -22,7 +22,7 @@ function prettyPrint($a){
 }
 
 function questionIdandIndexElimination($category, $dbConnection, $level = 1) {
-  $singleChoiceCount = 20; // Oder eine andere gewünschte Anzahl
+  $singleChoiceCount = 20; // Oder eine andere gewünschte Zahl
   $query = "SELECT id FROM questions WHERE type = :category AND is_multi = 0 AND level = :level ORDER BY RAND() LIMIT :singleChoiceCount";
   
   $stmt = $dbConnection->prepare($query);
