@@ -2,11 +2,12 @@
     session_start();
 } 
 
-include dirname(__DIR__) . '/utils/db.php';
+include __DIR__ . '/../utils/db.php';
+/* include __DIR__ . '/../utils/ranked.php'; */
 
 if (isset($_POST['endTime'])) {
-    $startTime = $_POST['endTime'];
-    $_SESSION['endTime'] = $startTime;
+    $endTime = $_POST['endTime'];
+    $_SESSION['endTime'] = $endTime;
     unset($_POST['endTime']);
         
     }
@@ -22,24 +23,6 @@ $quizTimeInSec = $interval->s + ($interval->i * 60) + ($interval->h * 3600) + ($
 $quizTimeInMil = ($quizTimeInSec * 1000) + ($interval->f * 1000);
 $_SESSION['quiztime']= $quizTimeInMil;
 
-function formatTime($quizTimeInMil) {
-    // Berechne die Gesamtzeit in Sekunden und Millisekunden
-    $totalSeconds = floor($quizTimeInMil / 1000);
-    $remainingMilliseconds = $quizTimeInMil % 1000;
-    
-    // Berechne die Minuten und verbleibenden Sekunden
-    $minutes = floor($totalSeconds / 60);
-    $seconds = $totalSeconds % 60;
-    
-    // Berechne die Hundertstelsekunden (zwei Nachkommastellen der Millisekunden)
-    $hundredthsOfSeconds = floor($remainingMilliseconds / 10); // Millisekunden in Hundertstelsekunden umwandeln
-    
-    // Formatiere die Zeit im Format mm:ss:th
-    $formattedTime = sprintf('%02d:%02d:%02d', $minutes, $seconds, $hundredthsOfSeconds);
-    
-    return $formattedTime;
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,12 +33,10 @@ function formatTime($quizTimeInMil) {
 </head>
 <body>
 <?php include '../utils/header.php'; ?>
-<form action="assets/scripts.php" method="POST">
-    <input type="hidden" name="send_ranking_simple" value="1">
-    <button type="submit">simple</button>
-</form>
+
 <form action="assets/scripts.php" method="POST">
     <input type="hidden" name="send_ranking_advanced" value="1">
+    <input type="text" name="name" placeholder="Dein Name" required>
     <button type="submit">advanced</button>
 </form>
 
@@ -64,19 +45,18 @@ function formatTime($quizTimeInMil) {
         <option value="animals">Tiere</option>
         <option value="geography">Geographie</option>
         <option value="history">Geschichte</option>
+        <option value="football">Fussball</option>
     </select>
-    <select name="level" id="level">
-        <option value="beginner">Anfänger</option>
-        <option value="advanced">Fortgeschritten</option>
+    <select name="difficulty" id="difficulty">
+        <option value="easy">Anfänger</option>
+        <option value="hard">Fortgeschritten</option>
+    </select>
+    <select name="mode" id="mode">
+        <option value="standard">Standard</option>
+        <option value="rapid">Rapid</option>
+        <option value="elimination">Elimination</option>
     </select>
     <button type="submit">advanced</button>
 </form>
-
-<?php
-echo formatTime($quizTimeInMil); 
-
-prettyPrint($_SESSION['category'])
-?>
-
 </body>
 </html>
