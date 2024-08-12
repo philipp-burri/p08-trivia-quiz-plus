@@ -36,17 +36,21 @@ function countUp() {
 
 function startTimer() {
     if (currentQuestionNr <= 9) {
-    
-    timer = setInterval(() => {
-        timeLeft--;
-        timerEl.textContent = timeLeft;
-        setTimer((10 - timeLeft) * 10);
-        if (timeLeft <= 0) {
-            clearInterval(timer);
-            countUp();
-        }
-    }, 1000);
-}
+        const startTime = Date.now();
+        const duration = 10000; // 10 Sekunden
+
+        timer = setInterval(() => {
+            const elapsedTime = Date.now() - startTime;
+            timeLeft = Math.max(0, 10 - Math.floor(elapsedTime / 1000));
+            timerEl.textContent = timeLeft;
+            setTimer((elapsedTime / duration) * 100);
+            
+            if (elapsedTime >= duration) {
+                clearInterval(timer);
+                countUp();
+            }
+        }, 50); // Aktualisierung alle 50ms für flüssigere Animation
+    }
 }
 
 function hideTimer() {
