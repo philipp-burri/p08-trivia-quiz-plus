@@ -223,37 +223,9 @@ $currentQuestion = $_SESSION['questionIndex'];
     </form>
 </div>
     <script>
-    $(document).ready(function () {
-        var showCountdown = <?php echo json_encode($showCountdown); ?>;
-        
-        if (showCountdown) {
-            var counter = 3;
-            
-            var timer = setInterval(function() {
-                $('#countdown').remove();
-                
-                if (counter > 0) {
-                    var countdown = $('<div id="countdown">' + counter + '</div>');
-                    countdown.appendTo($('#countdown-container'));
-                    setTimeout(() => {
-                        $('#countdown').css({ 'font-size': '0vw', 'opacity': 0 });
-                    }, 20);
-                } else if (counter === 0) {
-                    var countdown = $('<div id="countdown">GO</div>');
-                    countdown.appendTo($('#countdown-container'));
-                    setTimeout(() => {
-                        $('#countdown').css({ 'font-size': '0vw', 'opacity': 0 });
-                    }, 20);
-                } else {
-                    clearInterval(timer);
-                    $('#quiz-content').fadeIn(500);
-                }
-                
-                counter--;
-            }, 1000);
-        } else {
+        $(document).ready(function () {
             $('#quiz-content').show();
-        }
+            
         if (<?php echo json_encode($isRapidMode); ?>) {
         var timerRing = document.querySelector('.timer-ring__circle');
         var totalTime = 6; 
