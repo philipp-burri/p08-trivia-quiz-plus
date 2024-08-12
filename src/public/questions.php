@@ -254,25 +254,29 @@ $currentQuestion = $_SESSION['questionIndex'];
             $('#quiz-content').show();
         }
         if (<?php echo json_encode($isRapidMode); ?>) {
-        var timerRing = document.querySelector('.timer-ring__circle');
-        var totalTime = 6; 
-        var timeLeft = totalTime;
+            var timerRing = document.querySelector('.timer-ring__circle');
+            var totalTime = 10000; // 10 Sekunden in Millisekunden
+            var startTime = Date.now();
 
-        function updateTimer() {
+
+                function updateTimer() {
+                var currentTime = Date.now();
+                var elapsedTime = currentTime - startTime;
+                var timeLeft = Math.max(0, totalTime - elapsedTime);
+
             if (timeLeft > 0) {
-                timeLeft--;
                 var progress = (timeLeft / totalTime) * 2584;
                 timerRing.style.strokeDashoffset = 2584 - progress;
-                setTimeout(updateTimer, 1000);
+                requestAnimationFrame(updateTimer);
             } else {
                 document.getElementById('timeout').value = '1';
                 document.getElementById('quiz-form').submit();
             }
         }
 
-        updateTimer();
+        requestAnimationFrame(updateTimer);
     }
-        });
+});
 
     function safeStartTime() {
     var hiddenInput = document.getElementById("startTime");
