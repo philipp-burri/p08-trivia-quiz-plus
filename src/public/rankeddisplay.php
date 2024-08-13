@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="assets/css/header.css">
     <title>Leaderboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="/assets/img/faviconQ.png" type="image/x-icon">
     <style>
         body, html {
             margin: 0;

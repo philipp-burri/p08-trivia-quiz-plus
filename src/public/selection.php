@@ -24,8 +24,7 @@ $mode = $_SESSION['selected_mode'] ?? 'easy';
     <link rel="stylesheet" href="assets/css/header.css">
     <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" href="/assets/img/trivia-quiz-high-resolution-logo.png" type="image/x-icon">
-    
+    <link rel="icon" href="/assets/img/faviconQ.png" type="image/x-icon">    
     <script src="../assets/js/main.js"></script>
 </head>
 <body>
