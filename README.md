@@ -1,5 +1,5 @@
 
-![alt text](https://github.com/philipp-burri/p08-trivia-quiz-plus/blob/main/TitelBildGithub1-0.png?raw=true)
+![alt text](https://github.com/philipp-burri/p08-trivia-quiz-plus/blob/main/src/public/assets/img/TitelBildGithub1-0.png?raw=true)
 
 
 ## Projektübersicht
