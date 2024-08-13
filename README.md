@@ -1,3 +1,7 @@
+
+![alt text](https://github.com/philipp-burri/p08-trivia-quiz-plus/blob/main/TitelBildGithub1-0.png?raw=true)
+
+
 ## Projektübersicht
 
 **Trivia-Quiz-Plus** ist ein webbasiertes Quizspiel, das entwickelt wurde, um Benutzern ein unterhaltsames und lehrreiches Erlebnis zu bieten. Das Projekt bietet eine Vielzahl von Themen, zwei verschiedene Schwierigkeitsstufen und drei unterschiedliche Spielmodi. Ziel war es, ein flexibles Quizsystem zu erstellen, das auf einfache Weise erweitert werden kann und den Spielern unterschiedliche Herausforderungen bietet.
