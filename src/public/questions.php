@@ -23,7 +23,7 @@ $level = ($difficulty === 'hard') ? 2 : 1;
 $isEliminationMode = $mode === 'elimination';
 $isRapidMode = $mode === 'rapid';
 
-// Initialisierung der Quiz-Daten
+
 if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_SESSION['category'] !== $category || $_SESSION['difficulty'] !== $difficulty) {
     $questionData = questionIdandIndex($category, $dbConnection, $mode, $level);
     $_SESSION['questionIds'] = $questionData['questionIds'];
@@ -35,7 +35,6 @@ if (!isset($_SESSION['questionIds']) || !isset($_SESSION['questionIndex']) || $_
 
 $quizFinished = false;
 
-// Verarbeitung der Antwort oder des Timeouts
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['answer']) || isset($_POST['answers']) || isset($_POST['timeout']))) {
     $currentQuestionId = $_SESSION['questionIds'][$_SESSION['questionIndex']];
     $questionData = singlequestionID($currentQuestionId, $dbConnection);
@@ -43,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['answer']) || isset($
     $isCorrect = false;
 
     if (isset($_POST['timeout'])) {
-        // Timer abgelaufen, zur nächsten Frage gehen ohne Punkte
+   
         $_SESSION['questionIndex']++;
     } else {
         if ($isMulti) {
