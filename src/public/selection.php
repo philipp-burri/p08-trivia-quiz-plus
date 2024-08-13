@@ -82,7 +82,7 @@ $mode = $_SESSION['selected_mode'] ?? 'easy';
     <div class="card" data-mode="rapid">
         <div class="card-inner">
             <p class="mode-title">Rapid</p>
-            <p class="mode-description">Beantworte 10 Fragen mit einem Timer von 10 Sekunden</p>
+            <p class="mode-description">Beantworte 10 Fragen mit einem Timer</p>
         </div>
     </div>
     <div class="card" data-mode="elimination">
