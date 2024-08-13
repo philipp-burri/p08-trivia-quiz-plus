@@ -14,7 +14,7 @@ JavaScript und PHP kombinieren war aufwendig.
 
 ## Persönliche Ziele
 
-Persönliches Ziel nicht erreicht, praktische Anwendung PHP/PDO zu wenig. Ein bisschen phpMyAdmin-Datenbank bearbeitet.
+Persönliches Ziel nicht erreicht, praktische Anwendung PHP/PDO zu wenig. Ein bisschen MySQL-Datenbank bearbeitet.
 
 ## Ziele des Teams
 
