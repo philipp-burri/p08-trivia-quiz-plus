@@ -12,7 +12,7 @@
   - **Eliminationsmodus:** Das Quiz endet, sobald eine Frage falsch beantwortet wird.
 - **Multiple-Choice-Fragen:** Spieler müssen aus mehreren Antwortmöglichkeiten die richtige auswählen.
 - **Fortschrittsanzeige:** Eine Anzeige, die den aktuellen Fortschritt des Spielers während des Quiz zeigt.
-- **Quiztimer:** Ein Timer der die benötigte ZEit des Spielers misst und speichert.
+- **Quiztimer:** Ein Timer der die benötigte Zeit des Spielers misst und speichert.
 - **Bestenliste:** Eine Rangliste der besten Spieler, basierend auf den erzielten Punkten und der benötigen Zeit.
 
 ## Technologien
